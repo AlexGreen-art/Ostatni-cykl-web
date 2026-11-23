@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ostatni cykl</title>
+<style>
+:root{--tlo:#07090c;--pom:#f29b38;--pom-c:#b8631a;--nieb:#5fc4ff;--tekst:#ece8de;--szary:#9aa3ad;
+ --szeryf:Georgia,"Noto Serif",serif;--prosty:Roboto,"Noto Sans",system-ui,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#000;color:var(--tekst);font-family:var(--szeryf);user-select:none}
+#tel{position:relative;width:min(100vw,430px,45vh);width:min(100vw,430px,45dvh);aspect-ratio:9/20;margin:0 auto;background:var(--tlo);overflow:hidden;container-type:size}
+.warstwa{position:absolute;inset:0;background-size:cover;background-position:top center;transition:opacity .4s}
+.ukryta{opacity:0}
+/* pasek */
+.pasek{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;gap:1cqw;padding:2cqw 1.5cqw;
+ background:linear-gradient(rgba(0,0,0,.9),rgba(0,0,0,.6));font-family:var(--prosty)}
+.post{flex:1;display:flex;align-items:center;gap:5px;min-width:0;position:relative}
+.awatar{width:8.6cqw;height:8.6cqw;flex:none;border-radius:50%;border:2px solid var(--pom);background-color:#1a1f26;background-repeat:no-repeat}
+.liczby{display:grid;grid-template-columns:auto auto;column-gap:1.5cqw;font-size:3.2cqw;line-height:1.25}
+.liczby span{white-space:nowrap;color:var(--szary)} .liczby b{color:var(--tekst);font-weight:600}
+.delta{position:absolute;left:2cqw;top:30px;font-size:3.3cqw;font-weight:700;white-space:nowrap;text-shadow:0 1px 3px #000;
+ animation:unies 1.6s ease-out forwards;pointer-events:none}
+.delta.plus{color:#7be0b0}.delta.minus{color:#ff7b6b}
+@keyframes unies{0%{opacity:0;transform:translateY(8px)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+/* portret */
+.portret{position:absolute;left:50%;bottom:46%;height:46%;transform:translateX(-50%);max-width:none;opacity:0;transition:opacity .3s;
+ filter:drop-shadow(0 0 20px rgba(0,0,0,.85));pointer-events:none}
+.portret.widac{opacity:1}
+/* panel */
+.panel{position:absolute;left:0;right:0;top:54%;bottom:0;z-index:4;padding:2cqw 3cqw;overflow-y:auto;background:rgba(5,7,10,.94);border-top:1px solid #6b4a24}
+#tel.wspolny .panel{top:66%;bottom:2%;background:none;border-top:none;overflow:hidden;display:flex;flex-direction:column}
+.dymek{display:none!important}
+.panel{display:flex;flex-direction:column}
+.opcje:empty{display:none}
+.panel.zop .log{flex:0 0 auto}
+#tel.wspolny .panel.zop{top:auto!important;bottom:0;background:linear-gradient(rgba(5,7,10,0),rgba(5,7,10,.92) 4cqw)}
+.log{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:1.6cqw;position:relative}
+.wpis{background:rgba(10,13,18,.9);border-left:1.2cqw solid var(--pom);border-radius:2cqw;padding:1.8cqw 3cqw;
+ font-size:4.8cqw;line-height:1.35;opacity:.55;transition:opacity .3s,max-height .35s,margin .35s,padding .35s;animation:wej .3s ease}
+.wpis.ostatni{opacity:1}
+.wpis.ostatni::after{content:"▾";float:right;margin:.6cqw 0 0 2cqw;color:var(--pom);font-style:normal;animation:mig 1.2s infinite}
+.panel.zop .wpis::after{content:none}
+.wpis b{font-size:4.4cqw;margin-right:1.5cqw}
+.wpis.Jack{border-left-color:var(--pom)} .wpis.Jack b{color:var(--pom)}
+.wpis.Nerd{border-left-color:var(--nieb)} .wpis.Nerd b{color:var(--nieb)}
+.wpis[class*="Jack"] b{color:var(--pom)}
+.wpis.Soren{border-left-color:#7fe0b8} .wpis.Soren b{color:#7fe0b8}
+.dymek.Nerd{border-left-color:var(--nieb)} .dymek.Nerd .kto{color:var(--nieb)}
+.dymek.Soren{border-left-color:#7fe0b8} .dymek.Soren .kto{color:#7fe0b8}
+.wpis.narr{border-left-color:#6d7480;font-style:italic;color:#cfc9bb}
+.wpis.znika{opacity:0;max-height:0;padding-top:0;padding-bottom:0;margin-top:-1.6cqw;overflow:hidden}
+.log .dalej{position:absolute;right:2cqw;bottom:0}
+.dymek{position:relative;background:rgba(10,13,18,.93);border:1px solid #6b4a24;border-left:4px solid var(--pom);
+ border-radius:2.5cqw;padding:2.6cqw 3.5cqw 3.8cqw;min-height:17cqw}
+.dymek.wejscie{animation:wej .25s ease}
+@keyframes wej{from{opacity:0}to{opacity:1}}
+.kto{font-weight:bold;color:var(--pom);font-size:4.6cqw;margin-bottom:.6cqw}
+.tekst{font-size:5cqw;line-height:1.42}
+.tekst.narracja{font-style:italic;color:#cfc9bb}
+.dalej{position:absolute;right:12px;bottom:2px;color:var(--pom);animation:mig 1.2s infinite}
+@keyframes mig{50%{opacity:.25}}
+.opcje{margin-top:2cqw}
+.opcja{display:block;width:100%;text-align:left;margin:0 0 1.8cqw;padding:2.4cqw 3.4cqw;border-radius:2.5cqw;
+ border:1px solid var(--pom-c);background:rgba(60,34,10,.92);color:var(--tekst);font:inherit;font-size:4.6cqw;line-height:1.3;cursor:pointer}
+.opcja b{color:var(--pom);font-family:var(--prosty);margin-right:6px}
+.opcja.zablok{opacity:.55;cursor:default;border-style:dashed}
+.opcja small{display:block;font-family:var(--prosty);font-size:3cqw;color:var(--szary);margin-top:1cqw}
+.opcja:active{background:rgba(110,60,15,.95)}
+/* plansza */
+.plansza{position:absolute;inset:0;z-index:6;background-size:100% 100%;display:flex;flex-direction:column;align-items:center;
+ justify-content:center;text-align:center;padding:20% 10% 18%}
+.plansza .nad{font-family:var(--prosty);letter-spacing:6px;font-size:12px;color:var(--pom);margin-bottom:22px}
+.plansza p{font-size:5.4cqw;line-height:1.5;margin:0 0 16px}
+.plansza .duzy{font-size:8.5cqw;margin-bottom:22px}
+.osoba{display:flex;gap:3cqw;align-items:flex-start;text-align:left;margin-bottom:3cqw}
+.osoba p{font-size:4.7cqw;line-height:1.4;margin:0}
+.osoba b{color:var(--pom)}
+.awa{width:11cqw;height:11cqw;flex:none;border-radius:50%;border:2px solid var(--pom);background-repeat:no-repeat;background-color:#1a1f26}
+.plansza .dotknij{font-family:var(--prosty);font-size:12px;color:var(--szary);margin-top:18px;animation:mig 2s infinite}
+.koniec{position:absolute;inset:0;z-index:7;background:rgba(5,7,10,.92);display:flex;flex-direction:column;justify-content:center;
+ padding:30px 26px;font-family:var(--prosty);font-size:15px;line-height:1.5}
+.koniec h2{font-family:var(--szeryf);font-weight:normal;color:var(--pom);margin:0 0 12px}
+.koniec button{margin-top:18px;padding:12px;border-radius:10px;border:1px solid var(--pom-c);background:rgba(60,34,10,.92);color:var(--tekst);font:inherit}
+
+.aktaBtn{flex:none;align-self:center;font-family:var(--prosty);font-size:3cqw;font-weight:700;letter-spacing:.06em;color:var(--pom);border:1px solid var(--pom-c);border-radius:2cqw;padding:1.2cqw 2cqw;background:rgba(40,24,8,.85);position:relative;cursor:pointer}
+.aktaBtn .nr{display:inline-block;min-width:4cqw;margin-left:1cqw;color:var(--tekst)}
+.aktaBtn.blysk{animation:blysk 1.4s ease-out}
+@keyframes blysk{0%{box-shadow:0 0 0 0 rgba(242,155,56,.9)}100%{box-shadow:0 0 0 4cqw rgba(242,155,56,0)}}
+.aktaPlus{position:absolute;right:0;top:110%;white-space:nowrap;font-size:3cqw;color:#7be0b0;animation:unies 1.8s ease-out forwards;pointer-events:none}
+.akta{position:absolute;inset:0;z-index:12;background:rgba(5,7,10,.97);padding:6cqw 5cqw;overflow-y:auto;font-family:var(--szeryf)}
+.akta h2{font-weight:normal;color:var(--pom);margin:0 0 1cqw;font-size:6cqw}
+.akta .pod{font-family:var(--prosty);font-size:3.2cqw;color:var(--szary);margin-bottom:4cqw}
+.akta h3{font-family:var(--prosty);font-size:3.2cqw;letter-spacing:.15em;color:var(--szary);margin:5cqw 0 2cqw;font-weight:600}
+.akta .wpisA{border-left:1cqw solid var(--pom-c);background:rgba(20,24,30,.9);border-radius:1.5cqw;padding:2.4cqw 3cqw;margin-bottom:2cqw;font-size:4.2cqw;line-height:1.4}
+.akta .pusto{color:var(--szary);font-style:italic;font-size:4cqw}
+.akta .zamknij{position:absolute;right:4cqw;top:4cqw;font-family:var(--prosty);font-size:6cqw;color:var(--szary);background:none;border:none;cursor:pointer}
+
+/* menu startowe */
+.start{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 9cqw 16cqh;
+ background:linear-gradient(rgba(5,7,10,.35),rgba(5,7,10,.55) 40%,rgba(5,7,10,.97) 75%),url(img/centrum.webp) center top/cover no-repeat}
+.start h1{font-family:var(--szeryf);font-weight:normal;font-size:12cqw;letter-spacing:.04em;color:var(--tekst);margin:0;text-align:center;text-shadow:0 2px 12px #000}
+.start .podt{font-family:var(--prosty);font-size:3.2cqw;letter-spacing:.3em;color:var(--pom);margin:2cqw 0 9cqw;text-align:center}
+.start button,.menuW button{display:block;width:100%;margin:0 0 2.6cqw;padding:3.2cqw;border-radius:2.5cqw;border:1px solid var(--pom-c);background:rgba(40,24,8,.88);
+ color:var(--tekst);font-family:var(--prosty);font-size:4.4cqw;letter-spacing:.06em;cursor:pointer}
+.start button.glowny{background:rgba(110,60,15,.95);border-color:var(--pom)}
+.start button:active,.menuW button:active{background:rgba(110,60,15,.95)}
+.start .podpis{position:absolute;bottom:4cqw;left:0;right:0;text-align:center;font-family:var(--prosty);font-size:2.8cqw;color:var(--szary)}
+.toast{position:absolute;left:8cqw;right:8cqw;bottom:6cqh;z-index:13;background:rgba(20,24,30,.97);border:1px solid var(--pom-c);border-radius:2.5cqw;padding:3cqw;
+ font-family:var(--prosty);font-size:3.6cqw;line-height:1.4;text-align:center;animation:wej .3s ease}
+.menuBtn{flex:none;align-self:center;font-size:5.4cqw;line-height:1;color:var(--pom);padding:1cqw 1.2cqw;margin-left:-.5cqw;cursor:pointer}
+.menuW{position:absolute;inset:0;z-index:11;background:rgba(5,7,10,.93);display:flex;flex-direction:column;justify-content:center;padding:0 12cqw}
+.menuW h2{font-family:var(--szeryf);font-weight:normal;color:var(--pom);text-align:center;margin:0 0 6cqw;font-size:7cqw}
+.menuW p{font-family:var(--prosty);font-size:4cqw;line-height:1.45;text-align:center;margin:0 0 6cqw}
+.akta ul{margin:0 0 3cqw;padding-left:5cqw}.akta li{font-size:4.2cqw;line-height:1.45;margin-bottom:2cqw}
+.akta p{font-size:4.2cqw;line-height:1.45;margin:0 0 3cqw}
+</style>
+</head>
+<body>
+<div id="tel">
+  <div id="tloA" class="warstwa"></div>
+  <div id="tloB" class="warstwa ukryta"></div>
+  <img id="portret" class="portret" alt="">
+  <div class="pasek" id="pasek"></div>
+  <div class="panel" id="panel"><div class="dymek" id="dymek"><div class="kto" id="kto"></div><div class="tekst" id="tekst"></div><div class="dalej" id="dalej">▾</div></div><div class="log" id="log"></div><div class="opcje" id="opcje"></div></div>
+</div>
+<script>
+var POSTACIE={Jack:{img:"img/jack.webp",pos:"52% 14%",size:"300%"},Nerd:{img:"img/nerd.webp",pos:"50% 15%",size:"320%"},Soren:{img:"img/soren.webp",pos:"50% 14%",size:"300%"}};
+var PARAMY=[["sympatia","S"],["zaufanie","Z"],["szacunek","Sz"],["interesy","I"]];
+var WIDOKI={"Jack i Nerd przy stole 1":{tlo:"img/scena1.webp"},"Jack i Nerd przy stole 2":{tlo:"img/scena2.webp"},"Nerd i Soren w kantynie":{tlo:"img/scena3.webp"},"portret Jacka":{tlo:"img/centrum.webp",por:"img/jack.webp"},"portret Sorena":{tlo:"img/kantyna.webp",por:"img/soren.webp"},"Jack w ambulatorium":{tlo:"img/ambulatorium.webp",por:"img/jack.webp"},"ambulatorium":{tlo:"img/ambulatorium.webp"},"ambulatorium (pusta kapsuła)":{tlo:"img/ambulatorium_pusta.webp"},"Jack i Nerd w ambulatorium":{tlo:"img/scena5.webp",tekst:74},"Jack w ambulatorium (pusta)":{tlo:"img/ambulatorium_pusta.webp",por:"img/jack.webp"},"laboratorium":{tlo:"img/laboratorium.webp"},"Nerd i Soren w laboratorium":{tlo:"img/scena4.webp",proporcja:928/1695,tekst:60},"Nerd i Soren w laboratorium (Alan)":{tlo:"img/scena4b.webp",tekst:63},"Jack i Soren w maszynowni":{tlo:"img/scena6.webp",tekst:67},"Nerd w ambulatorium":{tlo:"img/ambulatorium.webp",por:"img/nerd.webp"},"Jack w maszynowni":{tlo:"img/maszynownia.webp",por:"img/jack.webp"},"Soren w maszynowni":{tlo:"img/maszynownia.webp",por:"img/soren.webp"},"kabina Sorena":{tlo:"img/kabina.webp"},"kwatera Alana":{tlo:"img/kwatera.webp",proporcja:928/1695,tekst:72},"Soren w kabinie":{tlo:"img/kabina.webp",por:"img/soren.webp"},"centrum dowodzenia":{tlo:"img/centrum.webp"},"Jack w centrum":{tlo:"img/centrum.webp",por:"img/jack.webp"},"Jack w laboratorium":{tlo:"img/laboratorium.webp",por:"img/jack.webp"},"Soren w laboratorium":{tlo:"img/laboratorium.webp",por:"img/soren.webp"},"Nerd w laboratorium":{tlo:"img/laboratorium.webp",por:"img/nerd.webp"}};
+var FAKTY=[{akt:"Akt 1",t:"Nerd uruchomił obce urządzenie bez zgody dowódcy, żeby ratować umierającego porucznika Alana."},{akt:"Akt 1",t:"Ktoś wysoko postawiony polecił cię na to stanowisko. Załoga o tym wie. Nie wiesz, kto to był."},{akt:"Akt 1",t:"Po przebudzeniu porucznik Alan omal nie wyskoczył przez śluzę. Nadmiar bodźców niemal doprowadził go do obłędu."},{akt:"Akt 1",t:"Nerda fascynują zmiany w percepcji Alana — bardziej, niż sam by chciał."},{akt:"Akt 1",t:"W zapisie uruchomienia maszyny brakuje kilku sekund."},{akt:"Akt 1",t:"Soren wskazał lukę w zapisie, zanim Nerd ją znalazł. Nie powiedział, skąd wiedział, gdzie patrzeć."},{akt:"Akt 2",t:"Porucznik Alan odmówił powrotu do kapsuły i zamknął się w swojej kwaterze."},{akt:"Akt 2",t:"To Soren naprowadził Nerda na błąd w odczytach Alana — pytaniami, tak żeby Nerd myślał, że znalazł go sam. Soren zna ten system lepiej, niż powinien."},{akt:"Akt 2",t:"Soren przeżył katastrofę swojego statku jako jedyny z całej załogi."},{akt:"Akt 2",t:"W kabinie Sorena wisi proporzec ze znakiem: półksiężyc nad pionową kreską. Ten sam znak jest na krążku, który Soren nosi przy sobie."},{akt:"Akt 2",t:"Soren wypytywał o Alana bardzo szczegółowo. Chce go zobaczyć albo dostać jego odczyty — twierdzi, że „widział już coś podobnego”."},{akt:"Akt 2",t:"Soren przeglądał odczyty porucznika Alana, zanim Nerd odzyskał zapis — z dostępem, który mu dałeś."},{akt:"Akt 2",t:"Ten sam znak co w kabinie Sorena jest w zapisie uruchomienia maszyny."},{akt:"Akt 2",t:"W zapisie maszyny jest opis o „zachowaniu życia poza jego naturalną granicą”. Maszyna nie służy tylko do zmiany percepcji."},{akt:"Akt 2",t:"Soren od początku wiedział, czym jest maszyna."},{akt:"Akt 3",t:"Maszyna to urządzenie regeneracyjne cywilizacji Sorena. Zmiany u Alana są skutkiem ubocznym — maszyna nie zna ludzkiego ciała. [K1]"},{akt:"Akt 3",t:"Soren się starzeje. Bez maszyny umrze. [K2]"},{akt:"Akt 3",t:"W nocy porucznik Alan sam przyszedł do laboratorium i długo stał przy maszynie."},{akt:"Maszyna",t:"Zmiany u Alana się pogłębiają. Bez korekty będzie coraz gorzej."},{akt:"Maszyna",t:"W ogniwie maszyny została energia na jeden pełny cykl. Reaktor statku jej nie zasili — próba podłączenia grozi przeciążeniem reaktora M-03."},{akt:"Akt 3",t:"Alan wielokrotnie rysuje znak z maszyny i patrzy w stronę laboratorium. To on chce zdecydować o jej losie. [K4]"},{akt:"Akt 3",t:"W rozkazie twojego przydziału jest dopisek „Priorytet: obserwacja urządzenia”. Rozkaz wydano, zanim maszynę uruchomiono. Podpis jest zaczerniony."},{akt:"Akt 3",t:"Zmiany u Alana da się odwrócić — tylko maszyną przestawioną na ludzki wzorzec. Potrzebna jest wiedza Sorena i dane Alana sprzed wypadku, które ma Nerd. [K3]"},{akt:"Akt 3",t:"Porucznik Alan sam wrócił do kapsuły. Bodźce stają się dla niego nie do zniesienia, a czasu jest mniej, niż myśleli."}];var znane=[];var czeka=false;var flagi={};var stan={};Object.keys(POSTACIE).forEach(function(p){stan[p]={sympatia:5,zaufanie:5,szacunek:5,interesy:5}});
+
+var SKRYPT=[
+ {plansza:["<div class='nad'>PROLOG</div>","<p class='duzy'>XXV wiek.</p>","<p>Dołączasz do załogi statku badawczego.</p>","<p>Awansowałeś szybciej, niż powinieneś. Ktoś wysoko postawiony cię polecił — i załoga o tym wie.</p>"]},
+ {plansza:["<div class='nad'>ZAŁOGA</div>",
+  "<div class='osoba'><span class='awa' style=\"background-image:url(img/jack.webp);background-size:300%;background-position:52% 14%\"></span><p><b>Jack</b> — dowódca. Wierzy w procedury, ale potrafi je złamać, by ratować ludzi. Później długo nosi ciężar takich decyzji.</p></div>",
+  "<div class='osoba'><span class='awa' style=\"background-image:url(img/nerd.webp);background-size:320%;background-position:50% 15%\"></span><p><b>Nerd</b> — naukowiec. Genialny, ambitny i doskonale świadomy swoich możliwości. Nie znosi przezwiska, które przylgnęło do niego jeszcze na studiach.</p></div>",
+  "<div class='osoba'><span class='awa' style=\"background-image:url(img/soren.webp);background-size:300%;background-position:50% 14%\"></span><p><b>Soren</b> — obcy ocalały z wraku. Nie zdradza, skąd pochodzi. Załoga mu nie ufa, ale jego wiedza bywa bezcenna.</p></div>"]},
+ {plansza:["<p>Załoga prowadzi intensywne badania nad maszyną odkrytą na jednej z odległych planet.</p>","<p>W tym samym czasie jeden z członków zespołu znajduje się w stanie krytycznym.</p>","<p>Trafiasz na pokład właśnie teraz — w sam środek kryzysu.</p>"]},
+ {widok:"Jack i Nerd przy stole 1"},
+ {kto:null,t:"Drzwi się rozsuwają. Na głównym ekranie: parametry życiowe jednego z członków załogi."},
+ {kto:"Jack",t:"„Powiedz mi jeszcze raz, że nie miałeś innego wyjścia.”"},
+ {kto:"Nerd",t:"„Nie miałem. Jego parametry życiowe spadały. Każda minuta zmniejszała szanse na przeżycie.”"},
+ {kto:"Jack",t:"„A więc uznałeś, że możesz sam zdecydować o uruchomieniu urządzenia, którego działania nadal nie rozumiemy?”"},
+ {kto:"Nerd",t:"„Uznałem, że mam przed sobą człowieka, który umiera. I że istnieje szansa, żeby go uratować.”"},
+ {kto:"Jack",t:"„Nie pytałem o twoje intencje.”"},
+ {kto:"Nerd",t:"„A ja nie zamierzam przepraszać za to, że żyje.”"},{fakt:0},
+ {kto:null,t:"Jack odwraca się. Dopiero teraz zauważa cię w wejściu."},
+ {kto:"Jack",t:"„A to kto?”"},
+ {kto:"Nerd",t:"„Nowy członek zespołu. Miał dzisiaj dołączyć.”"},
+ {kto:"Jack",t:"„Oczywiście. Właśnie dzisiaj.”"},
+ {widok:"portret Jacka"},
+ {kto:"Jack",t:"„Dowódca Jack. Wybacz, że nie organizujemy powitania. Mamy trochę ważniejsze problemy.”"},
+ {wybor:[
+  {t:"„Rozumiem. Mogę poczekać, aż sytuacja zostanie opanowana.”",r:[{kto:"Jack",t:"„Nie musisz czekać. Na razie po prostu nie przeszkadzaj.”"}],p:[["Jack","zaufanie",1]]},
+  {t:"„Wygląda na to, że trafiłem w sam środek kryzysu. Co się stało?”",r:[{kto:"Jack",t:"„Jeden z naszych ludzi walczy o życie. Resztę wyjaśnię później.”"}],p:[["Jack","szacunek",1]]},
+  {t:"„Nie wiedziałem, że moje przybycie będzie aż tak niepożądane.”",r:[{kto:"Jack",t:"„To nie jest kwestia twojego przybycia. Nie mam teraz czasu zajmować się twoimi odczuciami.”"}],p:[["Jack","szacunek",-1],["Jack","sympatia",-1]]}]},
+ {widok:"Jack i Nerd przy stole 2"},
+ {kto:"Nerd",t:"„Zanim wrócimy do wzajemnych pretensji, chciałbym przypomnieć, że pacjent żyje.”"},
+ {kto:"Jack",t:"„Dzięki urządzeniu, którego działania nie potrafisz przewidzieć.”"},
+ {kto:"Nerd",t:"„Potrafię przewidzieć wystarczająco dużo, żeby wiedzieć, że bez niego już by nie żył.”"},
+ {kto:"Jack",t:"„Nie miałeś prawa podejmować tej decyzji za niego.”"},
+ {kto:"Nerd",t:"„Miałem kilka minut na wybór między ryzykiem a śmiercią. Wybrałem ryzyko.”"},
+ {kto:null,t:"Jack zauważa, że nadal stoisz obok."},
+ {kto:"Jack",t:"„Skoro już tu jesteś, może przynajmniej dowiemy się, z kim mamy do czynienia. Masz jakieś doświadczenie w sytuacjach kryzysowych?”"},
+ {kto:"Nerd",t:"„Jack, może najpierw pozwól mu się rozejrzeć? Dopiero przekroczył próg.”"},
+ {widok:"portret Jacka"},
+ {kto:"Jack",t:"„Nie zatrudniamy ludzi po to, żeby się rozglądali.”"},
+ {wybor:[
+  {t:"„Mam doświadczenie. Jeśli jest coś, w czym mogę pomóc, proszę powiedzieć.”",r:[{kto:"Jack",t:"„Dobrze. Konkretna odpowiedź. Zobaczymy, czy za słowami pójdą umiejętności.”"}],p:[["Jack","zaufanie",1]]},
+  {t:"„Może najpierw ktoś wyjaśni mi, co właściwie się tutaj wydarzyło?”",r:[{kto:"Jack",t:"„Jeden z członków załogi był bliski śmierci. Nerd uruchomił nieznane urządzenie, żeby go uratować. Teraz próbujemy ustalić, co właściwie zrobił.”"},{kto:"Nerd",t:"„I właśnie dlatego warto najpierw poznać fakty, zanim zacznie się wydawać wyroki.”"}],p:[["Nerd","zaufanie",1]]},
+  {t:"„Jeśli oczekujecie, że od razu zacznę działać, potrzebuję wiedzieć, w co mnie wciągnięto.”",r:[{kto:"Jack",t:"„Słusznie. Nie oczekuję ślepego posłuszeństwa. Ale kiedy poznasz sytuację, będę oczekiwał odpowiedzialności za własne decyzje.”"}],p:[["Jack","szacunek",1]]}]},
+ {widok:"Nerd i Soren w kantynie"},
+ {kto:null,t:"Wchodzisz do kantyny. Przy jednym ze stolików siedzą Nerd i Soren."},
+ {kto:"Nerd",t:"„Podobno nasz nowy kolega zaliczył ekspresowy awans. Jeszcze nie zdążył się rozpakować, a już jest w naszym zespole.”"},
+ {kto:"Soren",t:"„To dość nietypowe. Ktoś musiał go szczególnie polecić.”"},
+ {kto:"Nerd",t:"„Nie mam pojęcia kto. I szczerze mówiąc, niewiele mnie to obchodzi, dopóki nie zacznie przeszkadzać mi w pracy.”"},
+ {kto:"Soren",t:"„A jednak ktoś uznał, że właśnie tutaj będzie potrzebny.”"},
+ {kto:"Nerd",t:"„Oby wiedział coś, czego my nie wiemy. Przydałby się ktoś, kto czasem rozwiązuje problemy, zamiast je mnożyć.”"},
+ {kto:null,t:"Nerd podnosi wzrok i dostrzega cię przy wejściu. Na chwilę zapada cisza."},
+ {kto:"Soren",t:"„Ach, nasz nowy członek załogi. Właśnie o tobie rozmawialiśmy.”"},
+ {kto:"Nerd",t:"„Właściwie to bardziej o okolicznościach twojego przydziału.”"},{fakt:1},
+ {widok:"portret Sorena"},
+ {kto:"Soren",t:"„Powiedz, komu zawdzięczasz tak szybki awans?”"},
+ {wybor:[
+  {t:"„To długa historia. Może kiedyś będzie okazja, żeby o tym porozmawiać.”",r:[{kto:"Soren",t:"„Oczywiście. Nie nalegam. Niektóre historie lepiej opowiadać we właściwym czasie.”"},{kto:"Nerd",t:"„Czyli tajemniczy awans i tajemniczy nowy człowiek. Zaczyna się ciekawie.”"}],p:[["Soren","sympatia",1]]},
+  {t:"„Wolałbym o tym nie rozmawiać. To moja sprawa.”",r:[{kto:"Soren",t:"„Rozumiem. Każdy ma prawo zachować pewne sprawy dla siebie.”"},{kto:"Nerd",t:"„Wreszcie ktoś, kto nie zamierza składać raportu z całego życia przy pierwszym spotkaniu.”"}],p:[["Soren","szacunek",1],["Nerd","sympatia",1]]},
+  {t:"„A ty? Skąd właściwie pochodzisz, Soren?”",r:[{kto:"Soren",t:"„To interesujące pytanie. Nie przypominam sobie jednak, żebym zdążył się przedstawić.”"},{kto:"Nerd",t:"„O, proszę. Ledwie się poznaliście, a już wymieniacie się tajemnicami.”"},{kto:"Soren",t:"„Może następnym razem zaczniemy od łatwiejszych pytań.”"}],p:[["Soren","szacunek",1]]}]},
+ {widok:"ambulatorium"},
+ {kto:null,t:"Wchodzisz do ambulatorium. Jack stoi obok zamkniętej kapsuły."},
+ {widok:"Jack w ambulatorium"},
+ {kto:"Jack",t:"„Urządzenie uratowało porucznika Alana. Ale kiedy się obudził, nadmiar bodźców niemal doprowadził go do obłędu.”"},
+ {kto:"Jack",t:"„Próbował wydostać się przez śluzę. Zabrakło niewiele.”"},
+ {kto:"Jack",t:"„Teraz jest w kapsule deprywacji sensorycznej. Ograniczamy mu w ten sposób dopływ bodźców.”"},{fakt:2},
+ {kto:"Jack",t:"„To mój człowiek i mój statek. Odpowiadam za jedno i drugie.”"},
+ {kto:"Jack",t:"„Chcę znać twoje zdanie. Co powinniśmy teraz zrobić?”"},
+ {wybor:[
+  {t:"„Nerd złamał procedury. Musi za to odpowiedzieć, niezależnie od intencji.”",r:[{kto:"Jack",t:"„Zgadzam się. Dobre intencje nie zwalniają z odpowiedzialności.”"},{kto:"Jack",t:"„Jeśli pozwolimy na takie decyzje, następnym razem możemy nie mieć tyle szczęścia.”"}],p:[["Jack","szacunek",1],["Jack","interesy",1]]},
+  {t:"„Nerd uratował mu życie. Nie możemy teraz przekreślać tego, co zrobił.”",r:[{kto:"Jack",t:"„Nie przekreślam tego. Wiem, że chciał go ratować.”"},{kto:"Jack",t:"„Ale życie to nie wszystko. Musimy jeszcze zadbać o to, co stało się później.”"}],p:[["Jack","sympatia",1],["Jack","interesy",-1]]},
+  {t:"„Czy ktoś w ogóle zapytał porucznika Alana, czego teraz chce?”",r:[{kto:"Jack",t:"„Nie. Nie było z nim kontaktu, kiedy sytuacja wymknęła się spod kontroli.”"},{kto:"Jack",t:"„Ale masz rację. Nie możemy bez końca podejmować decyzji za niego.”"},{kto:"Jack",t:"„Kiedy będzie to możliwe, jego zdanie musi się liczyć.”"}],p:[["Jack","zaufanie",1],["Jack","interesy",1]]}]},
+ {widok:"laboratorium"},
+ {kto:null,t:"Wchodzisz do laboratorium. Nerd pracuje przy rozświetlonym hologramie."},
+ {widok:"Nerd w laboratorium"},
+ {kto:"Nerd",t:"„Pozwól, że zgadnę. Jack już zdążył przedstawić ci swoją wersję wydarzeń.”"},
+ {kto:"Nerd",t:"„Pewnie wyszło na to, że jestem nieodpowiedzialnym naukowcem, który bawi się w Boga.”"},
+ {kto:"Nerd",t:"„Porucznik Alan umierał. Miałem kilka minut, może mniej. Maszyna była jedyną szansą, żeby go uratować.”"},
+ {kto:"Nerd",t:"„Nie zamierzałem stać obok i patrzeć, jak umiera, tylko dlatego, że nie mieliśmy czasu na zebranie komisji.”"},
+ {kto:"Nerd",t:"„Jednego nie przewidziałem. Tego, co stało się z jego percepcją po przebudzeniu.”"},
+ {kto:"Nerd",t:"„To, co teraz rejestruje, wykracza poza ludzkie możliwości. Przyznaję, że nie potrafię przestać o tym myśleć.”"},
+ {kto:"Nerd",t:"„Może nie powinienem być tym aż tak zafascynowany.”"},{fakt:3},
+ {kto:"Nerd",t:"„Powiedz mi wprost. Uważasz, że zrobiłem źle?”"},
+ {wybor:[
+  {t:"„Uratowałeś mu życie. W tamtej chwili to było najważniejsze.”",r:[{kto:"Nerd",t:"„Właśnie. Czasem trzeba podjąć decyzję, zanim będzie za późno.”"},{kto:"Nerd",t:"„Miło wiedzieć, że nie wszyscy uważają mnie za szaleńca.”"}],p:[["Nerd","sympatia",1],["Nerd","interesy",1]]},
+  {t:"„Może i miałeś rację, ale nie powinieneś decydować o tym sam.”",r:[{kto:"Nerd",t:"„Rozumiem, o co ci chodzi. Ale ktoś musiał podjąć decyzję.”"}],p:[["Nerd","szacunek",1],["Nerd","interesy",-1]]},
+  {t:"„Fascynacja zmianami u Alana powinna cię niepokoić. To człowiek, nie obiekt badań.”",r:[{kto:"Nerd",t:"„Myślisz, że tego nie wiem? Właśnie dlatego próbuję zrozumieć, co mu się stało.”"},{kto:"Nerd",t:"„Ale masz rację. Czasem łapię się na tym, że bardziej myślę o odkryciu niż o człowieku, którego ono dotyczy.”"}],p:[["Nerd","sympatia",-1],["Nerd","szacunek",1],["Nerd","interesy",-1]]}]},
+ {widok:"Nerd i Soren w laboratorium"},
+ {kto:null,t:"Wchodzisz do laboratorium. Nerd i Soren stoją przy konsoli, nad którą unosi się hologram zapisu pracy maszyny."},
+ {kto:"Nerd",t:"„Coś tu nie pasuje. Przeglądam zapis od kilku minut i nadal nie widzę, gdzie pojawił się błąd.”"},
+ {kto:"Soren",t:"„Tutaj.”"},
+ {kto:null,t:"Soren wskazuje fragment hologramu, zanim Nerd zdąży odnaleźć go na ekranie."},
+ {kto:"Nerd",t:"„Chwileczkę… Rzeczywiście. Brakuje kilku sekund z samego uruchomienia.”"},{fakt:4},
+ {kto:"Nerd",t:"„Skąd wiedziałeś, gdzie patrzeć?”"},
+ {kto:"Soren",t:"„Przypadek. Czasem warto przyjrzeć się temu, czego nie ma.”"},
+ {kto:"Nerd",t:"„To nie jest odpowiedź.”"},
+ {kto:"Soren",t:"„Nie twierdziłem, że nią jest.”"},{fakt:5},
+ {widok:"Soren w laboratorium"},
+ {kto:"Soren",t:"„Ty też to zauważyłeś. Ciekawe, co zrobisz z tą informacją.”"},
+ {wybor:[
+  {z:"zglosi_jackowi",t:"„Zgłoszę to Jackowi. Powinien wiedzieć o nieprawidłowości.”",r:[{kto:"Soren",t:"„Oczywiście. To rozsądne rozwiązanie.”"},{kto:"Soren",t:"„Nie każdy musi samodzielnie rozstrzygać takie sprawy.”"},{kto:"Nerd",t:"„Świetnie. Jeszcze tylko tego mi brakowało — raportu, zanim ustalę, co właściwie się stało.”"}],p:[["Soren","zaufanie",-1],["Nerd","sympatia",-1]]},
+  {t:"„Zapytam wprost: co jeszcze widzisz w tym zapisie, Soren?”",r:[{kto:"Soren",t:"„Zadajesz właściwe pytanie. Nie oznacza to jednak, że mam na nie odpowiedź, której oczekujesz.”"},{kto:"Nerd",t:"„Właśnie. Też chciałbym ją usłyszeć.”"}],p:[["Soren","szacunek",1],["Nerd","szacunek",1]]},
+  {z:"obserwuje_sorena",t:"„Na razie nic nie zrobię. Chcę zobaczyć, co wydarzy się dalej.”",r:[{kto:"Soren",t:"„Cierpliwość bywa niedocenianą zaletą.”"},{kto:"Soren",t:"„Zwłaszcza gdy nie wiadomo jeszcze, na co warto zwrócić uwagę.”"},{kto:"Nerd",t:"„Nie jestem przekonany, czy powinniśmy zostawiać to bez zgłoszenia.”"}],p:[["Soren","zaufanie",1],["Nerd","zaufanie",-1]]}]},
+ {plansza:["<div class='nad'>AKT 2</div>","<p class='duzy'>Konsekwencje</p>"]},
+ {warianty:[{gdy:"zglosi_jackowi",kroki:[{widok:"Jack i Nerd przy stole 2"},{kto:null,t:"Wracasz do centrum dowodzenia. Jack i Nerd przeglądają zapis z laboratorium."},{kto:"Nerd",t:"„W zapisie aktywacji brakuje kilku sekund. Nie potrafię ich odtworzyć.”"},{kto:"Jack",t:"„Wiem już o luce. Chcę ustalić, co zrobimy dalej i jak zabezpieczyć dostęp do urządzenia.”"},{kto:"Nerd",t:"„Potrzebuję dostępu do danych. Bez tego nie ustalę, co wydarzyło się podczas uruchomienia maszyny.”"},{kto:"Jack",t:"„Dostęp będzie kontrolowany. Nie zamierzam zostawiać ci wolnej ręki.”"},{widok:"portret Jacka"},{kto:"Jack",t:"„A ty? Jak proponujesz postąpić z dalszymi badaniami?”"},{wybor:[{t:"„Poprę ograniczenie dostępu. Nie możesz prowadzić analiz bez zgody Jacka.”",r:[{kto:"Jack",t:"„Dobrze. Przynajmniej mamy jasność, na czym stoimy.”"},{kto:"Nerd",t:"„Czyli zanim cokolwiek ustalę, będę musiał prosić o pozwolenie. Świetnie.”"}],p:[["Jack","zaufanie",1],["Nerd","sympatia",-1]]},{t:"„Pozwól Nerdowi badać zapis, ale niech raportuje ci każdy etap.”",r:[{kto:"Nerd",t:"„Raportować każdy etap? To będzie skutecznie spowalniać pracę.”"},{kto:"Jack",t:"„W takim razie nauczysz się pracować z nadzorem.”"}],p:[["Jack","szacunek",1],["Nerd","interesy",-1]]},{z:"obiecal_jackowi_rozmowe",t:"„Mogę sam porozmawiać z Sorenem i sprawdzić, co wie.”",r:[{kto:"Jack",t:"„Dobrze. Spróbuj dowiedzieć się czegoś konkretnego. Nie prowokuj go bez potrzeby.”"},{kto:"Nerd",t:"„Powodzenia. Mnie jakoś nie kwapił się niczego wyjaśniać.”"}],p:[["Jack","zaufanie",1],["Nerd","szacunek",1]]}]}]},{gdy:"obserwuje_sorena",kroki:[{widok:"Jack i Nerd przy stole 2"},{kto:null,t:"Wracasz do centrum dowodzenia. Jack i Nerd przeglądają zapis z laboratorium."},{kto:"Nerd",t:"„Znalazłem lukę w zapisie aktywacji. Brakuje kilku sekund, których nie potrafię odtworzyć.”"},{kto:"Jack",t:"„Czyli nadal nie wiemy, co wydarzyło się w tym czasie.”"},{kto:"Nerd",t:"„Właśnie dlatego potrzebuję dostępu do danych. Bez nich możemy tylko zgadywać.”"},{kto:"Jack",t:"„Dostęp będzie kontrolowany. Nie zamierzam zostawiać ci wolnej ręki.”"},{widok:"portret Jacka"},{kto:"Jack",t:"„A ty? Wiem, że rozmawiałeś z Sorenem w laboratorium. Zauważyłeś coś, co powinniśmy wiedzieć?”"},{wybor:[{z:"jack_wie_o_sorenie",t:"„Powiem ci teraz. Soren wskazał lukę, zanim Nerd ją znalazł.”",r:[{kto:"Jack",t:"„Dlaczego nie powiedziałeś mi o tym wcześniej?”"},{kto:"Nerd",t:"„No dobrze. Był szybszy. Nie musisz tego rozgłaszać po całym statku.”"}],p:[["Jack","zaufanie",1]]},{t:"„Na razie wolę milczeć i obserwować, co zrobi Soren.”",r:[{kto:"Jack",t:"„To twoja decyzja. Pamiętaj jednak, że niektóre informacje tracą wartość, gdy zbyt długo się je zatrzymuje.”"},{kto:"Nerd",t:"„Rozsądnie. Ja też nie zamierzam tego rozgłaszać.”"}],p:[["Nerd","zaufanie",-1]]},{t:"„Nerd, nie wspominaj na razie Jackowi o zachowaniu Sorena.”",r:[{kto:null,t:"Dyskretnie zwracasz się do Nerda, tak by Jack nie usłyszał."},{kto:"Nerd",t:"„Jasne. Sam nie miałem ochoty opowiadać Jackowi o Sorenie. Ale jeśli coś się wydarzy, nie będę tego ukrywał.”"},{kto:"Jack",t:"„Mam nadzieję, że nie planujecie niczego za moimi plecami.”"}],p:[["Nerd","zaufanie",1]]}]}]},{gdy:null,kroki:[{widok:"Jack i Nerd przy stole 2"},{kto:null,t:"Wracasz do centrum dowodzenia. Jack i Nerd przeglądają zapis z laboratorium."},{kto:"Nerd",t:"„Znalazłem lukę w zapisie aktywacji. Brakuje kilku sekund, których nie potrafię odtworzyć.”"},{kto:"Jack",t:"„Czyli nadal nie wiemy, co wydarzyło się w tym czasie.”"},{kto:"Nerd",t:"„Potrzebuję dostępu do danych. Bez tego nie ustalę, co się stało.”"},{kto:"Jack",t:"„Dostęp będzie kontrolowany. Nie zamierzam zostawiać ci wolnej ręki.”"},{widok:"portret Jacka"},{kto:"Jack",t:"„Wiem, że rozmawiałeś z Sorenem w laboratorium. Jak przebiegła ta rozmowa?”"},{wybor:[{z:"jack_wie_o_sorenie",t:"„Zapytałem, co jeszcze widzi w zapisie. Odpowiedział wymijająco.”",r:[{kto:"Jack",t:"„Czyli nie mamy odpowiedzi. Będę miał go na oku.”"},{kto:"Nerd",t:"„To niewiele, ale przynajmniej wiemy, że nie chciał nic wyjaśnić.”"}],p:[["Jack","zaufanie",1]]},{t:"„Pozwól Nerdowi kontynuować analizę, ale zachowajmy kopię wszystkich danych.”",r:[{kto:"Jack",t:"„Kopia będzie zabezpieczona. Dostęp do oryginału pozostaje pod kontrolą.”"},{kto:"Nerd",t:"„To rozsądne. Przynajmniej nie stracimy materiału, jeśli coś pójdzie nie tak.”"}],p:[["Jack","szacunek",1],["Nerd","sympatia",1]]},{t:"„Wstrzymajmy dostęp do urządzenia, dopóki ktoś niezależny nie sprawdzi zapisu.”",r:[{kto:"Jack",t:"„To może opóźnić badania, ale nie wykluczam takiego rozwiązania.”"},{kto:"Nerd",t:"„Niezależny ekspert od czego? Od urządzenia, którego nikt z nas nie rozumie?”"}],p:[["Jack","interesy",1],["Nerd","sympatia",-1]]}]}]}]},
+ {widok:"ambulatorium (pusta kapsuła)"},
+ {kto:null,t:"Wchodzisz do ambulatorium, gdzie otwarta kapsuła stoi pusta."},
+ {widok:"Jack i Nerd w ambulatorium"},
+ {kto:"Jack",t:"„Po otwarciu kapsuły Alan odmówił powrotu. Odłączył czujniki i wyszedł.”"},
+ {kto:"Nerd",t:"„Poszedł do swojej kwatery i zablokował drzwi od środka.”"},{fakt:6},
+ {kto:"Jack",t:"„Nie mamy pewności, w jakim jest stanie. Nie możemy zostawić go bez kontroli.”"},
+ {kto:"Nerd",t:"„Przymus może tylko pogorszyć sytuację. Musimy sprawdzić, jak funkcjonuje poza kapsułą.”"},
+ {kto:"Nerd",t:"„Przyznaję, że to, jak radzi sobie z nadmiarem bodźców, jest fascynujące.”"},
+ {kto:"Jack",t:"„To nie jest eksperyment. Mówimy o człowieku, za którego odpowiadam.”"},
+ {kto:"Nerd",t:"„Właśnie dlatego nie powinniśmy podejmować pochopnych decyzji.”"},
+ {widok:"Jack w ambulatorium (pusta)"},
+ {kto:"Jack",t:"„Musimy zdecydować teraz. Przywracamy zabezpieczenia czy pozwalamy mu zostać poza kapsułą?”"},
+ {wybor:[{t:"„Przywróć blokadę kapsuły. Dalszą decyzję pozostawiam tobie.”",r:[{kto:"Jack",t:"„Zajmę się tym. Nie możemy ryzykować bezpieczeństwa Alana ani załogi.”"},{kto:"Nerd",t:"„Czyli wracamy do zamknięcia go w kapsule. Nie jestem przekonany, że to pomoże.”"}],p:[["Jack","interesy",1],["Nerd","interesy",-1],["Nerd","sympatia",-1]]},{t:"„Pozwólmy mu zostać poza kapsułą. Obserwujmy go bez przymusu.”",r:[{kto:"Jack",t:"„Zgadzam się na obserwację, ale nie na brak zabezpieczeń. Musimy znać jego stan.”"},{kto:"Nerd",t:"„To rozsądniejsze. Przynajmniej nie będziemy pogarszać sytuacji przymusem.”"}],p:[["Jack","interesy",-1],["Nerd","interesy",1]]},{t:"„Sam zorganizuję dyżury. Alan nie zostanie bez opieki, ale nie zmusimy go do powrotu.”",r:[{kto:"Jack",t:"„Bierzesz na siebie odpowiedzialność za nadzór. Oczekuję regularnych raportów.”"},{kto:"Nerd",t:"„To może zadziałać. Będziemy obserwować jego stan, nie narzucając mu kapsuły.”"}],p:[["Jack","zaufanie",1],["Jack","interesy",-1],["Nerd","szacunek",1],["Nerd","interesy",1]]}]},
+ {widok:"Nerd i Soren w laboratorium (Alan)"},
+ {kto:null,t:"Wchodzisz do laboratorium; Nerd analizuje dane, a Soren stoi obok niego."},
+ {kto:"Nerd",t:"„Te odczyty nie mają sensu. Jeden wskazuje stabilne parametry Alana, drugi sugeruje poważne zaburzenia.”"},
+ {kto:"Nerd",t:"„Nie mogę ustalić, który jest wiarygodny. Bez tego nie wiemy, jak naprawdę czuje się porucznik.”"},
+ {kto:"Soren",t:"„Czy wszystkie pomiary zostały wykonane w tym samym przedziale czasu?”"},
+ {kto:"Nerd",t:"„Tak. Sprawdziłem znaczniki. Są zgodne.”"},
+ {kto:"Soren",t:"„A czy porównujesz wartości z tego samego źródła?”"},
+ {kto:"Nerd",t:"„Chwileczkę... Nie. Część danych pochodzi z kanału pomocniczego.”"},
+ {kto:"Soren",t:"„Co się stanie, jeśli zestawisz je osobno?”"},
+ {kto:"Nerd",t:"„Wtedy rozbieżności znikają. To nie błędne pomiary, tylko niewłaściwie połączone strumienie danych.”"},
+ {kto:"Nerd",t:"„Mam to. Wystarczy rozdzielić kanały i ponownie zsynchronizować odczyty.”"},{fakt:7},
+ {kto:"Soren",t:"„Tak. Pozostaje jeszcze korekta konfiguracji, żeby błąd nie powrócił.”"},
+ {kto:"Nerd",t:"„Znam ten moduł, ale nie pamiętam wszystkich ustawień.”"},
+ {widok:"Soren w laboratorium"},
+ {kto:"Soren",t:"„Mogę wprowadzić poprawkę. Jeśli wolisz, mogę też wyjaśnić ją Nerdowi, zanim cokolwiek zmienimy.”"},
+ {wybor:[{t:"„Zrób to. Wprowadź poprawkę sam.”",r:[{kto:"Soren",t:"„Dobrze. Zajmę się tym ostrożnie.”"},{kto:"Nerd",t:"„Skoro zna ustawienia lepiej ode mnie, nie będę mu przeszkadzał. Chcę zobaczyć wynik.”"}],p:[["Soren","zaufanie",1],["Nerd","interesy",-1]]},{t:"„Najpierw zabezpieczmy kopię wszystkich danych.”",r:[{kto:"Soren",t:"„Rozsądne zabezpieczenie. Nie mam powodu, by się sprzeciwiać.”"},{kto:"Nerd",t:"„Dobrze. Będziemy mieli punkt odniesienia, gdyby coś poszło nie tak.”"}],p:[["Soren","sympatia",-1],["Nerd","zaufanie",1]]},{t:"„Nerd zachowa kontrolę. Soren, wyjaśnij mu poprawkę krok po kroku.”",r:[{kto:"Soren",t:"„Oczywiście. To Nerd będzie wprowadzał zmiany, więc powinien znać każdy etap.”"},{kto:"Nerd",t:"„Właśnie tak wolę. Pokaż mi, od którego ustawienia zacząć.”"}],p:[["Soren","szacunek",1],["Nerd","szacunek",1]]}]},
+ {widok:"Jack i Soren w maszynowni"},
+ {kto:null,t:"Wchodzisz do maszynowni; Jack sprawdza wskazania systemów przy konsoli."},
+ {kto:"Jack",t:"„Alan, kapsuła, luka w zapisie. Do tego nowy człowiek w zespole.”"},
+ {kto:"Jack",t:"„Każda decyzja wraca do mnie. Nie mogę sobie pozwolić na kolejny błąd.”"},
+ {kto:"Soren",t:"„Katastrofa w końcu mija. Decyzje, które dowódca wtedy podjął, zostają z nim na zawsze.”"},
+ {kto:"Jack",t:"„Nie znamy się na tyle, żebyś mógł oceniać moje decyzje.”"},
+ {kto:"Soren",t:"„Nie oceniam ich. Wiem tylko, że odpowiedzialność potrafi zostać z człowiekiem znacznie dłużej niż samo zdarzenie.”"},
+ {kto:"Jack",t:"„Czasem nie ma nikogo, komu można ją oddać.”"},
+ {kto:"Soren",t:"„To nie znaczy, że trzeba nieść ją bez chwili wytchnienia.”"},
+ {wybor:[{t:"„Wycofam się. Nie będę wam przeszkadzać.”",r:[{kto:"Jack",t:"„Dziękuję. Potrzebowałem chwili, żeby uporządkować myśli.”"},{kto:"Soren",t:"„Czasem obecność oznacza również uszanowanie czyjejś ciszy.”"}],p:[["Jack","szacunek",1],["Soren","zaufanie",1]]},{t:"„Nie musisz dźwigać wszystkiego sam. Masz załogę.”",r:[{kto:"Jack",t:"„Wiem. Tylko nie zawsze łatwo mi o tym pamiętać.”"},{kto:"Soren",t:"„Dobrze, że ktoś mu o tym przypomniał.”"}],p:[["Jack","sympatia",1],["Soren","szacunek",1]]},{t:"„Mówisz o tym z własnego doświadczenia?”",r:[{kto:"Jack",t:"„To osobiste pytanie. Nie musisz na nie odpowiadać, Soren.”"},{kto:"Soren",t:"„Niektóre doświadczenia łatwiej rozpoznać, niż o nich opowiadać.”"}],p:[["Jack","zaufanie",-1],["Soren","zaufanie",-1]]}]},
+ {widok:"Soren w maszynowni"},
+ {kto:"Soren",t:"„Jeśli znajdziesz chwilę, zapraszam do mojej kabiny. Chciałbym z tobą porozmawiać.”"},
+ {warianty:[{gdy:"obiecal_jackowi_rozmowe",kroki:[{kto:null,t:"Jack przerywa sprawdzanie konsoli i patrzy na ciebie znacząco."}]},{gdy:null,kroki:[]}]},
+ {plansza:["<p>Kilka godzin później.</p>"]},
+ {widok:"kabina Sorena"},
+ {kto:null,t:"Przychodzisz do kabiny Sorena na jego zaproszenie z maszynowni."},
+ {widok:"Soren w kabinie"},
+ {warianty:[{gdy:"obiecal_jackowi_rozmowe",kroki:[{kto:"Soren",t:"„Czy przysłał cię dowódca?”"},{wybor:[{z:"przyznal_sie_sorenowi",t:"„Tak. Jack chce wiedzieć, co wiesz.”",r:[{kto:null,t:"Soren przyjmuje odpowiedź spokojnym skinieniem głowy."}],p:[]},{t:"„Nie. Przyszedłem z własnej woli.”",r:[{kto:null,t:"Soren przyjmuje odpowiedź spokojnym skinieniem głowy."}],p:[]}]}]},{gdy:null,kroki:[]}]},
+ {kto:"Soren",t:"„Mój statek się rozbił. Z całej załogi przeżyłem tylko ja.”"},
+ {kto:"Soren",t:"„Nie ocalałem dzięki szczególnym umiejętnościom. Po prostu tak się złożyło.”"},{fakt:8},
+ {widok:"kabina Sorena"},
+ {kto:null,t:"Na ścianie dostrzegasz ciemny proporzec z półksiężycem nad pionową kreską. Ten sam znak widnieje na metalowym krążku obracanym w dłoni Sorena."},{fakt:9},
+ {widok:"Soren w kabinie"},
+ {kto:null,t:"Soren zauważa twoje spojrzenie. Nie chowa krążka i nie komentuje znaku."},
+ {kto:"Soren",t:"„Od tamtej pory wasz statek jest moim domem. Przynajmniej na razie.”"},
+ {kto:"Soren",t:"„Chciałbym zapytać o porucznika Alana. Czy śpi spokojnie? Czy nadal słyszy więcej niż pozostali?”"},
+ {kto:"Soren",t:"„Mówi coś o tym, co czuje? O tym, co dociera do niego inaczej niż wcześniej?”"},
+ {kto:null,t:"Zastanawia cię, skąd Soren wie, o co dokładnie pytać."},
+ {kto:"Soren",t:"„Chciałbym zobaczyć porucznika Alana. Jeśli to niemożliwe, wystarczyłyby mi jego odczyty.”"},
+ {kto:"Soren",t:"„Widziałem już coś podobnego. Być może mógłbym pomóc, zanim skutki okażą się trudniejsze do opanowania.”"},
+ {kto:"Soren",t:"„Nie proszę, żebyś mi zaufał. Proszę tylko, żebyś rozważył tę możliwość.”"},{fakt:10},
+ {wybor:[{z:["pomaga_sorenowi","zapamietal_znak"],t:"„Pomogę ci dostać się do Alana albo zdobyć jego odczyty.”",r:[{kto:"Soren",t:"„Doceniam to. Nie będę nadużywał twojej pomocy.”"}],p:[["Soren","zaufanie",1]]},{z:"zapamietal_znak",t:"„Nie. Bez zgody Jacka nikt obcy nie zbliży się do Alana.”",r:[{kto:"Soren",t:"„Rozumiem. Nie oczekiwałem, że będzie to łatwe.”"}],p:[["Soren","sympatia",-1]]},{z:["soren_przez_jacka","zapamietal_znak"],t:"„Mogę pomóc, ale Jack musi o tym wiedzieć.”",r:[{kto:"Soren",t:"„Rozsądny warunek. Nie zamierzam stawiać cię między mną a dowódcą.”"}],p:[["Soren","szacunek",1]]}]},
+ {plansza:["<p>Następnego dnia.</p>"]},
+ {widok:"laboratorium"},
+ {kto:null,t:"Wchodzisz do laboratorium; Nerd wzywał cię pilnie."},
+ {jesli:"obiecal_jackowi_rozmowe",tak:[{widok:"Jack w laboratorium"},{kto:"Jack",t:"„No i co? Rozmawiałeś z nim?”"},{wybor:[{z:"jack_wie_o_znaku",t:"„W kabinie ma proporzec z półksiężycem nad kreską. Chce zobaczyć Alana lub jego odczyty.”",r:[{kto:"Jack",t:"„Dobrze, że mi powiedziałeś. Nie podejdzie do Alana bez mojej zgody.”"},{kto:null,t:"Jack wychodzi z laboratorium."}],p:[]},{t:"„Nic konkretnego.”",r:[{kto:"Jack",t:"„To nie brzmi jak cała odpowiedź. Nie będę cię teraz naciskał.”"},{kto:null,t:"Jack wychodzi z laboratorium."}],p:[["Jack","zaufanie",-1]]}]}]},
+ {widok:"Nerd w laboratorium"},
+ {kto:"Nerd",t:"„Udało mi się odzyskać strzęp brakujących sekund z pamięci podręcznej.”"},
+ {kto:"Nerd",t:"„To nie jest zwykły błąd zapisu. Znalazłem coś, czego nie potrafię jeszcze wyjaśnić.”"},
+ {kto:"Nerd",t:"„I nie wiem, czy bardziej mnie to cieszy, czy niepokoi.”"},
+ {jesli:"pomaga_sorenowi",tak:[{kto:"Nerd",t:"„W logu widzę, że Soren przeglądał odczyty Alana, zanim odzyskałem fragment. Skorzystał z dostępu, który mu umożliwiłeś. Wiedziałeś?”"},{kto:null,t:"Wiedziałeś, że Soren chciał zobaczyć dane, ale nie że już je przeglądał."},{fakt:11}]},
+ {kto:"Nerd",t:"„Spójrz na zapis uruchomienia. W odzyskanym fragmencie jest jeszcze ten symbol.”"},
+ {kto:null,t:"Rozpoznajesz półksiężyc nad pionową kreską z proporca i krążka Sorena. Wahasz się, czy powiedzieć Nerdowi, że widziałeś go wcześniej."},
+ {fakt:12},
+ {jesli:["Nerd","zaufanie",6],tak:[{kto:"Nerd",t:"„Udało mi się częściowo odczytać opis przy symbolu.”"},{kto:"Nerd",t:"„Mówi o zachowaniu życia poza jego naturalną granicą.”"},{kto:"Nerd",t:"„Nie rozumiem, co to miałoby oznaczać dla Alana.”"},{fakt:13}],nie:[{kto:"Nerd",t:"„Przy symbolu jest jeszcze opis, ale nie odczytałem go do końca.”"},{kto:"Nerd",t:"„Jeszcze nad nim pracuję.”"},{kto:null,t:"Nie pokazuje ci dalszej części zapisu."}]},
+ {kto:null,t:"Soren wskazał brakujące sekundy, nosił ten sam znak i pytał o Alana. To nie był przypadek."},
+ {kto:null,t:"Soren od początku wiedział, czym jest maszyna."},
+ {fakt:14},
+ {wybor:[{z:"konfrontuje_sorena",t:"„Idę do Sorena. Chcę usłyszeć, co ma do powiedzenia.”",r:[{kto:"Nerd",t:"„Nie wiem, czy to najlepszy moment. Ale nie będę cię zatrzymywał.”"}],p:[]},{z:"obserwuje_sorena_26",t:"„Nie powiem Sorenowi, co znaleźliśmy. Będę go obserwować.”",r:[{kto:"Nerd",t:"„Uważaj, żebyś nie pomylił cierpliwości z bezczynnością.”"}],p:[]},{z:"zabezpieczyl_fragment",t:"„Zabezpieczmy fragment, zanim Soren dowie się, że go odczytaliśmy.”",r:[{kto:"Nerd",t:"„Dobrze. Zrobię kopię i zabezpieczę jej dostęp. Nie możemy ryzykować utraty jedynego fragmentu.”"}],p:[["Nerd","interesy",-1]]}]},
+ {plansza:["<div class='nad'>AKT 3</div>","<p class='duzy'>Cena wiedzy</p>"]},
+ {widok:"kabina Sorena"},
+ {jesli:"konfrontuje_sorena",tak:[{kto:null,t:"Idziesz prosto z laboratorium do kabiny Sorena i wchodzisz bez pukania."},{widok:"Soren w kabinie"},{kto:"Soren",t:"„Spodziewałem się, że przyjdziesz.”"},{kto:null,t:"Pytasz wprost, czy wiedział, czym jest ta maszyna."},{kto:"Soren",t:"„Tak.”"}]},
+ {jesli:"obserwuje_sorena_26",tak:[{kto:null,t:"Przychodzisz do Sorena pod pretekstem powrotu do rozmowy o poruczniku Alanie."},{widok:"Soren w kabinie"},{kto:"Soren",t:"„Nie przyszedłeś tu wyłącznie z powodu Alana.”"},{kto:"Soren",t:"„Wyczuwam, że coś wiesz. Zastanawiasz się tylko, ile mi powiedzieć.”"}]},
+ {jesli:"zabezpieczyl_fragment",tak:[{kto:null,t:"Soren sam wezwał cię do kabiny."},{widok:"Soren w kabinie"},{kto:"Soren",t:"„Odzyskaliście fragment i zabezpieczyliście go. Wiem o tym.”"},{kto:"Soren",t:"„Nie będę udawał, że ta wiadomość mnie ucieszyła.”"}]},
+ {widok:"Soren w kabinie"},
+ {kto:"Soren",t:"„Znałem tę maszynę, zanim wasza załoga ją znalazła.”"},
+ {kto:"Soren",t:"„Nie kłamałem. Po prostu nikt mnie nie zapytał.”"},
+ {jesli:["Soren","zaufanie",6],tak:[{kto:"Soren",t:"„Maszyna pochodzi od mojego ludu. Służy do odbudowy ciała, nie do zmieniania zmysłów.”"},{kto:"Soren",t:"„Nie została stworzona z myślą o ludzkim organizmie. Zmiany u Alana są skutkiem ubocznym jej działania.”"},{fakt:15},{kto:"Soren",t:"„Moi ludzie żyją długo dzięki takim urządzeniom. Bez nich nasze ciała z czasem przestają się odbudowywać.”"},{kto:"Soren",t:"„Ja również się starzeję. Bez tej maszyny umrę.”"},{fakt:16}],nie:[{kto:"Soren",t:"„To nie jest to, czym się wydaje. Jeszcze nie jesteś gotów usłyszeć reszty.”"}]},
+ {kto:"Soren",t:"„Co zamierzasz z tym zrobić?”"},
+ {wybor:[{z:"obiecal_pomoc_sorenowi",t:"„Pomogę ci. Nie obiecuję, że będzie łatwo, ale spróbuję.”",r:[{kto:"Soren",t:"„Zapamiętam tę obietnicę. Nie będę wymagał od ciebie więcej, niż sam możesz zdecydować.”"}],p:[["Soren","zaufanie",1]]},{z:"ostrzegl_sorena",t:"„Jack dowie się tego, co mi powiedziałeś.”",r:[{kto:"Soren",t:"„Masz prawo mu powiedzieć. Nie będę próbował cię powstrzymywać.”"}],p:[["Soren","zaufanie",-1]]},{t:"„Nie podejmę teraz decyzji. Zachowam tę rozmowę dla siebie.”",r:[{kto:"Soren",t:"„Rozumiem. Czasem milczenie daje więcej możliwości niż pochopna deklaracja.”"}],p:[["Soren","szacunek",1]]}]},
+ {plansza:["<p>Następnego ranka.</p>"]},
+ {widok:"laboratorium"},
+ {kto:null,t:"Rano przychodzisz do laboratorium na pilne wezwanie Nerda."},
+ {widok:"Nerd w laboratorium"},
+ {kto:"Nerd",t:"„Prawie nie spałem. Obejrzyj nagranie z nocnego monitoringu.”"},
+ {kto:null,t:"Porucznik Alan sam wchodzi do laboratorium, podchodzi do maszyny i długo przy niej stoi. Niczego nie dotyka."},
+ {fakt:17},
+ {kto:"Nerd",t:"„Sprawdziłem jego odczyty z ostatnich dni. Zmiany w organizmie Alana się pogłębiają.”"},
+ {kto:"Nerd",t:"„Bez korekty będzie coraz gorzej.”"},
+ {fakt:18},
+ {kto:"Nerd",t:"„Sprawdziłem też ogniwo maszyny. Jest uszkodzone, a energii zostało na jeden pełny cykl.”"},
+ {kto:"Nerd",t:"„Reaktor M-03 nie może jej zasilić. To inna technologia. Próba podłączenia grozi przeciążeniem reaktora.”"},
+ {fakt:19},
+ {kto:"Nerd",t:"„Jedno mnie zastanawia. Alan sam przychodzi do laboratorium i stoi przy urządzeniu. Co z tym robimy?”"},
+ {wybor:[{t:"„Zablokujmy mu dostęp do laboratorium.”",r:[{kto:"Nerd",t:"„Nie podoba mi się to. Odcinamy go od miejsca, do którego sam wraca, a ja tracę możliwość obserwowania jego zachowania.”"}],p:[["Nerd","interesy",-1]]},{t:"„Zostawmy wszystko jak jest. Obserwujmy, co zrobi kolejnej nocy.”",r:[{kto:"Nerd",t:"„Dobrze. Sprawdzę zapis monitoringu po następnej nocy. Przynajmniej nie będziemy go prowokować.”"}],p:[]},{z:"poszedl_do_alana",t:"„Pójdę do jego kwatery. Chcę sprawdzić, czego od nas oczekuje.”",r:[{kto:"Nerd",t:"„Sam? Nie wiem, czy cię wpuści. Nie naciskaj, jeśli nie będzie chciał rozmawiać.”"}],p:[]}]},
+ {jesli:"poszedl_do_alana",tak:[{plansza:["<p>Idziesz do kwatery porucznika Alana.</p>","<p>Nie odpowiada na pukanie. Po chwili drzwi się otwierają.</p>"]},{widok:"kwatera Alana"},{kto:null,t:"Ten sam znak. Na ścianach, na podłodze, na drzwiach szafki — dziesiątki razy, każdy trochę inny."},{kto:null,t:"Jakby Alan szukał właściwego i wciąż nie mógł go znaleźć."},{kto:null,t:"Alan stoi za tobą w drzwiach. Patrzy na ciebie, potem odwraca wzrok w stronę laboratorium."},{fakt:20}]},
+ {widok:"centrum dowodzenia"},
+ {kto:null,t:"Jack wzywa cię do centrum dowodzenia. Chce porozmawiać bez świadków."},
+ {widok:"Jack w centrum"},
+ {jesli:"jack_wie_o_sorenie",tak:[{kto:"Jack",t:"„Doceniam, że powiedziałeś mi o Sorenie, kiedy znaleźliśmy lukę w zapisie.”"}]},
+ {jesli:"jack_wie_o_znaku",tak:[{kto:"Jack",t:"„Wspominałeś o znaku w kabinie Sorena i o jego prośbie dotyczącej Alana.”"},{kto:"Jack",t:"„Nie zapomniałem o tym.”"}]},
+ {jesli:"poszedl_do_alana",tak:[{kto:"Jack",t:"„Nerd powiedział mi, że byłeś u Alana. Co tam zobaczyłeś?”"}]},
+ {jesli:"!jack_wie_o_sorenie",tak:[{jesli:"!jack_wie_o_znaku",tak:[{jesli:"!poszedl_do_alana",tak:[{kto:"Jack",t:"„Mam wrażenie, że wiesz więcej niż ja. Na moim statku.”"}]}]}]},
+ {kto:"Jack",t:"„Nie lubię, gdy ktoś na moim statku ma tajemnice. Nawet jeśli ma dobre powody.”"},
+ {jesli:["Jack","zaufanie",6],tak:[{kto:"Jack",t:"„Sprawdziłem jeszcze raz rozkaz twojego przydziału. Zobacz, kiedy go wystawiono.”"},{kto:"Jack",t:"„Przyszedł przed uruchomieniem maszyny. Na dole jest dopisek: «Priorytet: obserwacja urządzenia».”"},{kto:"Jack",t:"„Nie wiem, kto go dodał. Podpis jest zaczerniony.”"},{fakt:21}],nie:[{kto:"Jack",t:"„Twój przydział od początku mi się nie podobał.”"}]},
+ {kto:"Jack",t:"„Co jeszcze powinienem wiedzieć?”"},
+ {wybor:[{z:"jack_wie_wszystko",t:"„Powiem ci wszystko, co wiem o Sorenie i o tym, co zobaczyłem u Alana.”",r:[{kto:null,t:"Mówisz Jackowi, że Soren znał maszynę, zanim ją znaleźliście."}],p:[["Jack","zaufanie",1]]},{t:"„Powiem tylko o stanie maszyny i Alana. Bez informacji o Sorenie.”",r:[{kto:null,t:"Mówisz Jackowi o jednym cyklu w ogniwie i o tym, że zmiany u Alana postępują."},{kto:"Jack",t:"„Jeden cykl i żadnego bezpiecznego sposobu na doładowanie. Musimy dobrze przemyśleć, co z nim zrobimy.”"}],p:[]},{t:"„Na razie to wszystko.”",r:[{kto:"Jack",t:"„W porządku. Ale proszę cię o szczerość. Nie chcę dowiadywać się o ważnych sprawach od kogoś innego.”"}],p:[["Jack","zaufanie",-1]]}]},
+ {jesli:"jack_wie_wszystko",tak:[{jesli:{fakt:15},tak:[{kto:null,t:"Mówisz, że maszyna pochodzi od jego ludu i służy do odbudowy ciała."}]},{jesli:{fakt:16},tak:[{kto:null,t:"I że Soren się starzeje. Bez maszyny umrze."}]},{jesli:"pomaga_sorenowi",tak:[{kto:null,t:"Przyznajesz, że Soren przeglądał odczyty Alana — z dostępem od ciebie."}]},{jesli:"poszedl_do_alana",tak:[{kto:null,t:"Opowiadasz o znakach w kwaterze Alana i o tym, jak spojrzał w stronę laboratorium."}]},{kto:"Jack",t:"„To zmienia sytuację. Nie możemy już traktować działań Sorena jak zwykłej ciekawości.”"},{jesli:"ostrzegl_sorena",tak:[{kto:"Jack",t:"„Skoro go ostrzegłeś, będzie przygotowany na to, że zacznę zadawać pytania.”"}]}]},
+ {plansza:["<p>Później tego samego dnia.</p>"]},
+ {widok:"laboratorium"},
+ {kto:null,t:"Nerd od świtu analizuje dane Alana. Wezwał cię, gdy znalazł coś istotnego."},
+ {widok:"Nerd w laboratorium"},
+ {kto:"Nerd",t:"„Porównałem obecne odczyty Alana z jego dokumentacją medyczną sprzed wypadku.”"},
+ {kto:"Nerd",t:"„Maszyna próbuje odbudować jego ciało według wzorca, na którym została skalibrowana. To nie jest ludzki wzorzec.”"},
+ {kto:"Nerd",t:"„Gdybyśmy podali jej właściwy, ludzki wzorzec, mogłaby cofnąć zmiany.”"},
+ {kto:"Nerd",t:"„Nie wiem jednak, jak przestawić maszynę. Nie rozumiem jej sterowania.”"},
+ {jesli:["Nerd","zaufanie",6],tak:[{kto:"Nerd",t:"„Jedyną osobą, która może znać sposób przestawienia, jest Soren.”"},{kto:"Nerd",t:"„Potrzebujemy jego wiedzy, danych Alana sprzed wypadku, które mam, i ostatniego cyklu energii.”"},{fakt:22}],nie:[{kto:"Nerd",t:"„Muszę to jeszcze zbadać.”"},{kto:null,t:"Zamyka część danych i przechodzi do kolejnego wykresu. Masz wrażenie, że nie powiedział ci wszystkiego."}]},
+ {jesli:"jack_wie_wszystko",tak:[{kto:"Nerd",t:"„Jack już tu był. Zakazał mi zbliżać się do maszyny bez jego zgody. Jakby brakowało mi nadzoru.”"},{kto:"Nerd",t:"„Przekazał mi, co mu powiedziałeś o Sorenie.”"},{jesli:{fakt:16},tak:[{kto:"Nerd",t:"„Wiem, że bez maszyny Soren umrze. Nie wiem, czy chce wykorzystać na siebie ostatni cykl.”"}]}]},
+ {kto:"Nerd",t:"„Chcę pomóc Alanowi. Nie po to ratowaliśmy go, żeby teraz patrzeć, jak jego stan się pogarsza.”"},
+ {kto:"Nerd",t:"„Ale to największe odkrycie w mojej karierze. Jeśli wykorzystamy ostatni cykl, mogę stracić szansę, żeby naprawdę zrozumieć to urządzenie.”"},
+ {kto:"Nerd",t:"„Nie chcę wybierać między ratowaniem człowieka a wiedzą, której być może nigdy więcej nie zdobędziemy.”"},
+ {wybor:[{z:"nerd_granica",t:"„Alan jest najważniejszy. Badania muszą poczekać.”",r:[{kto:"Nerd",t:"„Wiem. Nie musisz mi przypominać, że chodzi o człowieka. Ale trudno mi pogodzić się z utratą takiej szansy.”"}],p:[["Nerd","szacunek",1],["Nerd","interesy",-1]]},{z:"nerd_bada",t:"„Najpierw zrozummy maszynę. Potem zdecydujemy, jak jej użyć.”",r:[{kto:"Nerd",t:"„Właśnie tego potrzebuję. Nie chcę zmarnować ostatniego cyklu przez decyzję podjętą w ciemno.”"}],p:[["Nerd","zaufanie",1],["Nerd","interesy",1]]},{z:"prosi_sorena_o_alana",t:"„Pójdę do Sorena. Poproszę go, żeby pomógł Alanowi.”",r:[{kto:"Nerd",t:"„To może być nasza jedyna szansa. Soren zna tę technologię lepiej od nas.”"}],p:[["Nerd","zaufanie",1]]}]},
+ {widok:"Jack i Soren w maszynowni"},
+ {kto:null,t:"Wchodzisz do maszynowni, gdy Jack i Soren rozmawiają o dalszym losie ogniwa."},
+ {kto:"Jack",t:"„Wyjmę ogniwo z maszyny i zamknę je w zbrojowni.”"},
+ {kto:"Jack",t:"„Nikt go nie użyje bez mojego rozkazu. Nie będziemy ryzykować, że ostatni cykl zostanie wykorzystany bez kontroli.”"},
+ {jesli:"jack_wie_wszystko",tak:[{kto:"Jack",t:"„Wiem, czym jest ta maszyna dla twojego ludu. Wiem, do czego została stworzona.”"},{jesli:{fakt:16},tak:[{kto:"Jack",t:"„Wiem też, że bez niej umrzesz.”"},{kto:"Soren",t:"„Nie będę temu zaprzeczał.”"}]}]},
+ {kto:"Soren",t:"„Wyjęcie ogniwa z działającej maszyny może je uszkodzić. Wtedy nie będzie już służyć ani Alanowi, ani nikomu innemu.”"},
+ {kto:"Soren",t:"„Nie chciałbym, żeby ostatnia możliwość została przekreślona przez pośpiech.”"},
+ {jesli:"prosi_sorena_o_alana",tak:[{kto:"Soren",t:"„Pamiętam twoją prośbę o pomoc Alanowi. Jeszcze na nią nie odpowiedziałem.”"}]},
+ {widok:"Jack w maszynowni"},
+ {kto:"Jack",t:"„Jesteś po mojej stronie czy nie?”"},
+ {wybor:[{z:"ogniwo_u_jacka",t:"„Popieram decyzję Jacka. Ogniwo powinno trafić pod klucz.”",r:[{kto:"Jack",t:"„Dobrze. Zajmę się tym. Ogniwo zostanie zabezpieczone w zbrojowni.”"},{kto:"Soren",t:"„Rozumiem. Mam nadzieję, że wiesz, jak wiele możliwości właśnie zamykasz.”"}],p:[["Jack","zaufanie",1],["Soren","zaufanie",-1]]},{z:"stanal_za_sorenem",t:"„Nie ruszaj ogniwa. Nie możesz sam decydować o tym, co się z nim stanie.”",r:[{kto:"Jack",t:"„To ja odpowiadam za ten statek. Nie możesz oczekiwać, że będę bezczynnie patrzył.”"},{kto:"Soren",t:"„Dziękuję. Nie zapomnę, że zdecydowałeś się mnie wysłuchać.”"}],p:[["Jack","zaufanie",-1],["Jack","szacunek",-1],["Soren","zaufanie",1]]},{z:"chce_narady",t:"„Nie podejmujmy tej decyzji przed naradą całej załogi.”",r:[],p:[]}]},
+ {jesli:"chce_narady",tak:[{jesli:["Jack","zaufanie",6],tak:[{kto:"Jack",t:"„Nie podoba mi się to. Ale dobrze. Zwołam naradę, zanim podejmiemy ostateczną decyzję.”"},{kto:"Soren",t:"„To daje nam przynajmniej szansę na rozważenie wszystkich konsekwencji.”"},{ustaw:"narada"}],nie:[{kto:"Jack",t:"„Nie mam czasu na narady.”"},{kto:"Jack",t:"„Wyjmę ogniwo. Decyzja pozostaje w moich rękach.”"},{kto:"Soren",t:"„W takim razie mam nadzieję, że nie popełnisz błędu, którego nie będzie można naprawić.”"},{ustaw:"ogniwo_u_jacka"}]}]},
+ {plansza:["<p>Noc.</p>","<p>Rano.</p>"]},
+ {widok:"ambulatorium"},
+ {kto:null,t:"Nerd wzywa cię do ambulatorium. W nocy wydarzyło się coś, czego się nie spodziewał."},
+ {widok:"Nerd w ambulatorium"},
+ {kto:"Nerd",t:"„Alan przyszedł tu w nocy sam. Położył się w kapsule. Nikt go do tego nie zmuszał.”"},
+ {kto:"Nerd",t:"„Nie wiem, czy powinienem się cieszyć. Bardziej mnie to niepokoi.”"},
+ {fakt:23},
+ {kto:"Nerd",t:"„Odczyty pogorszyły się bardziej, niż przewidywałem. Mamy mniej czasu, niż myśleliśmy.”"},
+ {widok:"ambulatorium"},
+ {jesli:"poszedl_do_alana",tak:[{kto:null,t:"Podchodzisz do kapsuły. Alan otwiera oczy, dostrzega cię i przykłada dłoń do szyby. Na dłoni widzisz znak z maszyny."}]},
+ {jesli:"narada",tak:[{kto:"Jack (interkom)",t:"„Narada całej załogi w centrum dowodzenia. Teraz. Wszyscy mają się stawić.”"}]},
+ {jesli:"ogniwo_u_jacka",tak:[{kto:"Jack (interkom)",t:"„Wszyscy do centrum dowodzenia. Podjąłem decyzję i chcę ją ogłosić.”"}]},
+ {jesli:"stanal_za_sorenem",tak:[{kto:"Jack (interkom)",t:"„Wszyscy do centrum dowodzenia. Natychmiast.”"},{widok:"Nerd w ambulatorium"},{kto:"Nerd",t:"„Jack i Soren nie zamienili ze sobą słowa od rana.”"},{widok:"ambulatorium"}]},
+ {kto:null,t:"Opuszczasz ambulatorium i kierujesz się do centrum dowodzenia."},
+ {plansza:["<div class='nad'>AKT 4</div>","<p class='duzy'>Narada</p>"]},
+ {widok:"centrum dowodzenia"},
+ {kto:null,t:"Wszyscy są już w centrum dowodzenia. Jack, Nerd i Soren stoją przy stole. Nikt nie siada."},
+ {sprawdzOdsuniety:true},
+ {jesli:"odsuniety",tak:[{plansza:["<p>Na naradę nikt cię nie wzywa.</p>","<p>Jack, Nerd i Soren rozmawiają za zamkniętymi drzwiami. Bez ciebie.</p>"]},{plansza:["<p>Kilka godzin później przychodzi transmisja z dowództwa.</p>","<p>Maszyna i porucznik Alan mają zostać przekazani Flocie. Bez dyskusji.</p>"]},{plansza:["<p>Pod rozkazem ten sam podpis, który zaczerniono w twoim przydziale. Teraz jest jawny: kontradmirał Malcolm Thorne.</p>","<p>Byłeś ich oczami na tym statku. Nikt ci nie powiedział, że tylko oczami.</p>"]},{zak:[5,"Odsunięty"]}],nie:[{jesli:"narada",tak:[{kto:"Jack",t:"„Zwołałem naradę, bo ktoś mnie o to poprosił. Niech każdy powie, czego chce.”"}]},{jesli:"ogniwo_u_jacka",tak:[{kto:"Jack",t:"„Ogniwo jest w zbrojowni. Chcę je zniszczyć, a Alana utrzymać w kapsule, dopóki nie dotrzemy do bazy.”"}]},{jesli:"stanal_za_sorenem",tak:[{kto:"Jack",t:"„Ogniwo wciąż jest w maszynie, bo ktoś stanął mi na drodze.”"},{kto:null,t:"Jack patrzy na ciebie dłużej, niż to konieczne."}]},{kto:"Jack",t:"„Nie zamierzam ryzykować statku dla czyjegokolwiek eksperymentu.”"},{jesli:"nerd_bada",tak:[{kto:"Nerd",t:"„Ostatni cykl to jedyna szansa, żeby zrozumieć tę maszynę. Nie wolno go zmarnować.”"}]},{jesli:"nerd_granica",tak:[{kto:"Nerd",t:"„Alan jest najważniejszy. Wiem. Ale bez Sorena nie przestawię maszyny.”"}]},{jesli:"prosi_sorena_o_alana",tak:[{kto:"Nerd",t:"„Jedyna droga dla Alana prowadzi przez Sorena. Nie podoba mi się to, ale tak jest.”"}]},{jesli:{fakt:16},tak:[{kto:"Soren",t:"„Ostatni cykl może uratować Alana albo mnie. Nie będę udawał, że nie chcę żyć.”"}],nie:[{kto:"Soren",t:"„Mam własne powody, by ta maszyna działała. Nie będę ich ukrywał dłużej, niż muszę.”"}]},{jesli:"prosi_sorena_o_alana",tak:[{kto:"Soren",t:"„Prosiłeś mnie o pomoc dla Alana. Odpowiem, kiedy zapadnie decyzja.”"}]},{widok:"Jack w centrum"},{jesli:{fakt:21},tak:[{kto:"Jack",t:"„Dowództwo przysłało cię tu z jednym priorytetem: ta maszyna. Więc to ty zdecydujesz.”"}],nie:[{kto:"Jack",t:"„Jesteś tu najkrócej. Może dlatego widzisz to najjaśniej. Ty zdecydujesz.”"}]},{kto:"Jack",t:"„Komu oddajemy decyzję?”"},{wybor:[{z:"koniec_1",t:"„Decyzja należy do dowódcy. Jack, zrób to, co uważasz za słuszne.”",r:[{kto:"Jack",t:"„Dobrze. Biorę to na siebie.”"}],p:[]},{z:"koniec_2",t:"„Niech Nerd prowadzi. Najpierw zrozummy tę maszynę.”",r:[{kto:"Nerd",t:"„Nie zmarnuję tego. Obiecuję.”"}],p:[]},{z:"koniec_3",t:"„Soren zna tę maszynę najlepiej. Oddajmy mu ogniwo.”",r:[{kto:"Soren",t:"„Dziękuję. Nie zapomnę tego.”"}],p:[]},{z:"koniec_4",wym:true,t:"„Nikt z nas nie ma prawa. Decyzja należy do Alana.”",r:[{kto:null,t:"Przez chwilę nikt się nie odzywa."},{kto:"Jack",t:"„Ma rację. Otwórzcie kapsułę.”"},{kto:"Nerd",t:"„Nareszcie ktoś to powiedział.”"},{kto:"Soren",t:"„Zgadzam się. Niech wybierze on.”"}],p:[]}]},{jesli:"koniec_1",tak:[{plansza:["<p>Jack sam zanosi ogniwo do śluzy. Ostatni cykl znika w próżni.</p>"]},{plansza:["<p>Alan zostaje w kapsule. Jest bezpieczny.</p>","<p>Nikt go nie zapytał.</p>"]},{plansza:["<p>Kilka tygodni później Soren przestaje wychodzić ze swojej kabiny.</p>","<p>Jack nie mówi o tym nikomu. Nosi to w sobie, jak wszystko.</p>"]},{zak:[1,"Klatka"]}]},{jesli:"koniec_2",tak:[{plansza:["<p>Nerd dostaje maszynę i dostęp do Alana. Pomiary trwają tygodniami.</p>"]},{plansza:["<p>Ostatni cykl zużywa na badania.</p>","<p>Rozumie prawie wszystko — oprócz tego, jak cofnąć zmiany.</p>"]},{plansza:["<p>W raportach dla dowództwa porucznik Alan nazywa się teraz: Przypadek 01.</p>","<p>Soren umiera, zanim statek dociera do bazy.</p>"]},{zak:[2,"Przypadek badawczy"]}]},{jesli:"koniec_3",tak:[{plansza:["<p>Jack oddaje ogniwo. Soren dziękuje skinieniem głowy.</p>"]},{plansza:["<p>Rano kabina Sorena jest pusta. Maszyna milczy, ogniwo jest martwe.</p>","<p>Brakuje jednego wahadłowca.</p>"]},{jesli:"prosi_sorena_o_alana",tak:[{plansza:["<p>Na stole zostawił krążek ze znakiem i jedno zdanie:</p>","<p>„Pamiętałem twoją prośbę. Nie byłem dość silny.”</p>"]}]},{plansza:["<p>Alan zostaje taki, jaki jest.</p>","<p>Zmiany postępują dalej.</p>"]},{zak:[3,"Cena Sorena"]}]},{jesli:"koniec_4",tak:[{plansza:["<p>Jack sam otwiera kapsułę. Alan wychodzi, mrużąc oczy przed światłem.</p>"]},{plansza:["<p>Staje przy maszynie. Długo patrzy na Nerda, potem na Sorena.</p>"]},{plansza:["<p>Przykłada dłoń ze znakiem do piersi Sorena.</p>","<p>Wybrał.</p>"]},{plansza:["<p>Ostatni cykl dostaje Soren.</p>","<p>Alan zostaje taki, jaki jest — bo sam tak zdecydował.</p>"]},{plansza:["<p>Soren uczy go żyć z tym, co słyszy. Nikt inny na statku by tego nie potrafił.</p>","<p>Alan nigdy nie będzie tym samym człowiekiem. Ale to był jego wybór.</p>"]},{zak:[4,"Głos Alana"]}]}]},
+ {koniec:true}
+];
+
+
+var CACHE={};
+function wczytaj(src){if(!CACHE[src]){var im=new Image();im.decoding="async";im.src=src;CACHE[src]=im.decode?im.decode().catch(function(){}):Promise.resolve()}return CACHE[src]}
+(function(){var lista=["img/ramka.webp"];Object.keys(WIDOKI).forEach(function(k){var w=WIDOKI[k];lista.push(w.tlo);if(w.por)lista.push(w.por)});
+ lista.filter(function(x,i){return lista.indexOf(x)==i}).forEach(function(src,i){setTimeout(function(){wczytaj(src)},i*60)})})();
+var $=function(i){return document.getElementById(i)}, tel=$("tel"), i=0, widok=null, czekaWybor=false, aktywneTlo="tloA", kolejka=null;
+function pasek(){var p=$("pasek");p.innerHTML="";setTimeout(function(){[].forEach.call(p.querySelectorAll(".menuBtn,.aktaBtn"),function(x){x.remove()});var m=document.createElement("div");m.className="menuBtn";m.textContent="≡";m.onclick=function(ev){ev.stopPropagation();menuGry()};p.appendChild(m);var b=document.createElement("div");b.className="aktaBtn";b.id="aktaBtn";b.innerHTML="AKTA<span class=nr>"+znane.length+"</span>";b.onclick=function(ev){ev.stopPropagation();pokazAkta()};p.appendChild(b)},0);Object.keys(POSTACIE).forEach(function(n){var P=POSTACIE[n];
+ var d=document.createElement("div");d.className="post";d.id="post-"+n;
+ var a=document.createElement("div");a.className="awatar";a.style.backgroundImage="url("+P.img+")";a.style.backgroundSize=P.size;a.style.backgroundPosition=P.pos;a.title=n;
+ var l=document.createElement("div");l.className="liczby";
+ l.innerHTML=PARAMY.map(function(x){return "<span>"+x[1]+" <b>"+stan[n][x[0]]+"</b></span>"}).join("");
+ d.appendChild(a);d.appendChild(l);p.appendChild(d)})}
+
+function aktaNowy(){if(szybko)return;var b=$("aktaBtn");if(!b)return;b.querySelector(".nr").textContent=znane.length;b.classList.remove("blysk");void b.offsetWidth;b.classList.add("blysk");
+ var e=document.createElement("div");e.className="aktaPlus";e.textContent="+1 nowy fakt";b.appendChild(e);setTimeout(function(){e.remove()},1900)}
+function pokazAkta(){var o=document.createElement("div");o.className="akta";
+ var h="<button class=zamknij>✕</button><h2>Akta</h2><div class=pod>Co wiesz do tej pory. Niektóre fakty zdobędziesz tylko wtedy, gdy ktoś ci zaufa.</div>";
+ if(!znane.length)h+="<div class=pusto>Jeszcze nic nie wiesz.</div>";
+ var mz=znane.filter(function(i){return FAKTY[i].akt=="Maszyna"});if(mz.length){h+="<h3>MASZYNA — CO WIADOMO</h3>";mz.forEach(function(i){h+="<div class=wpisA style='border-left-color:var(--nieb)'>"+FAKTY[i].t+"</div>"})}var akt=null;znane.filter(function(i){return FAKTY[i].akt!="Maszyna"}).forEach(function(i){var f=FAKTY[i];if(f.akt!==akt){akt=f.akt;h+="<h3>"+akt.toUpperCase()+"</h3>"}h+="<div class=wpisA>"+f.t+"</div>"});
+ o.innerHTML=h;o.onclick=function(ev){ev.stopPropagation();if(ev.target.classList.contains("zamknij"))o.remove()};tel.appendChild(o)}
+
+function kluczowe(){return znane.filter(function(i){return /\[K\d\]$/.test(FAKTY[i].t)}).length}
+function wymOk(){var b=[];if(kluczowe()<4)b.push("kluczowe fakty "+kluczowe()+" z 4");["Jack","Nerd","Soren"].forEach(function(n){if(stan[n].zaufanie<6)b.push("zaufanie: "+n)});return b}
+function zakonczenie(nr,nazwa){szybko=false;usunZapis();var e=document.createElement("div");e.className="koniec";
+ var h="<h2>Zakończenie "+nr+" z 5</h2><p style='font-family:var(--szeryf);font-size:6cqw;margin:0 0 4cqw'>"+nazwa+"</p><p>Kluczowe fakty w aktach: "+kluczowe()+" z 4.</p>";
+ if(nr!=4)h+="<p>Istnieje zakończenie, w którym o swoim losie decyduje sam Alan.</p>";
+ e.innerHTML=h;var b=document.createElement("button");b.textContent="Od początku";b.onclick=function(ev){ev.stopPropagation();location.reload()};e.appendChild(b);
+ var a=document.createElement("button");a.textContent="Akta";a.style.marginTop="2cqw";a.onclick=function(ev){ev.stopPropagation();pokazAkta()};e.appendChild(a);tel.appendChild(e)}
+function delta(n,par,v){if(szybko)return;var c=$("post-"+n);if(!c)return;var e=document.createElement("div");
+ e.className="delta "+(v>0?"plus":"minus");e.style.top=(30+16*c.querySelectorAll(".delta").length)+"px";e.textContent=(v>0?"+":"−")+Math.abs(v)+" "+par;c.appendChild(e)}
+function ustawWidok(w){if(w===widok)return;widok=w;var W=WIDOKI[w],url="url("+W.tlo+")";if(W.proporcja){var hp=(1/W.proporcja)/(20/9)*100+(W.przes||0);url="linear-gradient(to bottom,rgba(7,9,12,0) "+(hp-10)+"%,rgb(7,9,12) "+hp+"%),"+url}
+ var nowe=aktywneTlo==="tloA"?"tloB":"tloA";$(nowe).style.backgroundImage=url;$(nowe).style.backgroundSize=W.proporcja?"100% auto":"cover";$(nowe).style.backgroundPosition=W.przes?"0 0, 0 "+W.przes+"cqh":"";$(nowe).style.backgroundRepeat="no-repeat";$(nowe).style.backgroundColor="rgb(7,9,12)";$("panel").style.top=W.tekst?W.tekst+"%":"";$(nowe).classList.remove("ukryta");$(aktywneTlo).classList.add("ukryta");aktywneTlo=nowe;
+ tel.classList.toggle("wspolny",!W.por);$("log").innerHTML="";var por=$("portret");if(W.por){por.src=W.por;por.classList.add("widac")}else por.classList.remove("widac")}
+function wpis(k){var L=$("log");[].forEach.call(L.querySelectorAll(".wpis"),function(x){x.classList.remove("ostatni")});
+ var e=document.createElement("div");e.className="wpis ostatni "+(k.kto||"narr");
+ e.innerHTML=(k.kto?"<b>"+k.kto+"</b>":"")+k.t.replace(/</g,"&lt;");L.appendChild(e);
+ var w=[].slice.call(L.querySelectorAll(".wpis:not(.znika)")),suma=0;
+ for(var j=w.length-1;j>=0;j--){suma+=w[j].offsetHeight+8;if(suma>L.clientHeight){for(var m=0;m<=j;m++){(function(x){x.classList.add("znika");setTimeout(function(){x.remove()},400)})(w[m])}break}}}
+function pokaz(k){if(szybko){ostatnia=k;return}wpis(k);return;$("kto").style.display=k.kto?"":"none";$("kto").textContent=k.kto||"";
+ $("tekst").className="tekst"+(k.kto?"":" narracja");$("tekst").textContent=k.t;
+ var d=$("dymek");d.className="dymek "+(k.kto||"");void d.offsetWidth;d.classList.add("wejscie");$("dalej").style.display=""}
+function plansza(html){if(szybko)return;$("portret").classList.remove("widac");$("tloA").classList.add("ukryta");$("tloB").classList.add("ukryta");widok=null;$("log").innerHTML="";var e=document.createElement("div");e.className="plansza";e.style.backgroundImage="url(img/ramka.webp)";
+ e.innerHTML=html.join("")+"<div class='dotknij'>dotknij, żeby czytać dalej</div>";
+ e.onclick=function(ev){ev.stopPropagation();e.remove();krok()};tel.appendChild(e);$("panel").style.visibility="hidden"}
+function koniec(){var e=document.createElement("div");e.className="koniec";
+ e.innerHTML="<h2>Koniec podglądu</h2><p>Tu zaczyna się finał — scena 4.1.</p><p>Liczby startowe (po 5) są robocze — prawdziwe ustalimy, gdy będzie znana liczba scen.</p>";
+ var b=document.createElement("button");b.textContent="Od początku";b.onclick=function(ev){ev.stopPropagation();location.reload()};e.appendChild(b);tel.appendChild(e)}
+function wybor(lista){if(szybko){if(odtw.length){var nr=odtw.shift(),w0=lista[nr];zapis.push(nr);
+   if(w0.z)[].concat(w0.z).forEach(function(f){flagi[f]=true});w0.p.forEach(function(x){stan[x[0]][x[1]]=Math.max(0,Math.min(10,stan[x[0]][x[1]]+x[2]))});kolejka=w0.r.slice();ostatnia=null;return}
+  szybko=false;$("panel").style.visibility="";pasek();if(ostatnia)wpis(ostatnia)}
+ czekaWybor=true;var ws=[].slice.call($("log").querySelectorAll(".wpis"));ws.slice(0,-1).forEach(function(x){x.remove()});$("panel").classList.add("zop");$("dalej").style.display="none";var o=$("opcje");o.innerHTML="";
+ lista.forEach(function(w,k){var b=document.createElement("button");b.className="opcja";b.innerHTML="<b>"+"ABCD"[k]+"</b>"+w.t;if(w.wym){var br=wymOk();if(br.length){b.className="opcja zablok";b.innerHTML="<b>"+"ABCD"[k]+"</b>🔒 "+w.t+"<small>Brakuje: "+br.join(", ")+"</small>";o.appendChild(b);return}}
+  b.onclick=function(ev){ev.stopPropagation();o.innerHTML="";$("panel").classList.remove("zop");czekaWybor=false;zapis.push(k);zapisz();
+   if(w.z)[].concat(w.z).forEach(function(f){flagi[f]=true});w.p.forEach(function(x){stan[x[0]][x[1]]=Math.max(0,Math.min(10,stan[x[0]][x[1]]+x[2]))});pasek();
+   w.p.forEach(function(x){delta(x[0],x[1],x[2])});
+   kolejka=w.r.slice();if(kolejka.length)pokaz(kolejka.shift());else{kolejka=null;$("panel").classList.remove("zop");krok()}};
+  o.appendChild(b)})}
+function krok(){
+ if(kolejka&&kolejka.length){pokaz(kolejka.shift());return}
+ kolejka=null;
+ var s=SKRYPT[i++];if(!s){szybko=false;return}
+ if(s.fakt!==undefined){if(znane.indexOf(s.fakt)<0){znane.push(s.fakt);aktaNowy()}krok();return}
+ if(s.zak){zakonczenie(s.zak[0],s.zak[1]);return}
+ if(s.sprawdzOdsuniety){if(["Jack","Nerd","Soren"].every(function(n){return stan[n].zaufanie<=4}))flagi.odsuniety=true;krok();return}
+ if(s.ustaw){flagi[s.ustaw]=true;krok();return}
+ if(s.jesli){var ok=Array.isArray(s.jesli)?stan[s.jesli[0]][s.jesli[1]]>=s.jesli[2]:(typeof s.jesli=="object"?znane.indexOf(s.jesli.fakt)>=0:(s.jesli.charAt(0)=="!"?!flagi[s.jesli.slice(1)]:!!flagi[s.jesli]));SKRYPT.splice.apply(SKRYPT,[i,0].concat(ok?s.tak:(s.nie||[])));krok();return}
+ if(s.warianty){var wyb=s.warianty.filter(function(v){return v.gdy?flagi[v.gdy]:true})[0];SKRYPT.splice.apply(SKRYPT,[i,0].concat(wyb.kroki));krok();return}
+ if(s.plansza){plansza(s.plansza);return}
+ $("panel").style.visibility="";
+ if(s.widok){if(szybko){ustawWidok(s.widok);return}var Wx=WIDOKI[s.widok];if(s.widok===widok){krok();return}czeka=true;Promise.all([wczytaj(Wx.tlo)].concat(Wx.por?[wczytaj(Wx.por)]:[])).then(function(){czeka=false;ustawWidok(s.widok);krok()});return}
+ if(s.wybor){wybor(s.wybor);return}
+ if(s.koniec){szybko=false;koniec();return}
+ pokaz(s);
+ if(SKRYPT[i]&&SKRYPT[i].wybor){var w=SKRYPT[i++];wybor(w.wybor)}
+}
+tel.addEventListener("click",function(){if(!czekaWybor&&!czeka&&grasie)krok()});
+var WERSJA="2026-11-23",KLUCZ="ostatni_cykl_zapis",szybko=false,odtw=[],zapis=[],ostatnia=null,grasie=false;
+function zapisz(){try{localStorage.setItem(KLUCZ,JSON.stringify({w:WERSJA,z:zapis}))}catch(e){}}
+function usunZapis(){try{localStorage.removeItem(KLUCZ)}catch(e){}}
+function wczytajZapis(){try{var d=JSON.parse(localStorage.getItem(KLUCZ)||"null");if(d&&d.w===WERSJA&&d.z&&d.z.length)return d.z}catch(e){}return null}
+function toast(t){var e=document.createElement("div");e.className="toast";e.textContent=t;tel.appendChild(e);setTimeout(function(){e.remove()},3500)}
+function nakladka(h){var o=document.createElement("div");o.className="akta";o.innerHTML="<button class=zamknij>✕</button>"+h;
+ o.onclick=function(ev){ev.stopPropagation();if(ev.target.classList.contains("zamknij"))o.remove()};tel.appendChild(o)}
+function jakGrac(){nakladka("<h2>Jak grać</h2><div class=pod>Ostatni cykl to gra o wyborach. Nie ma tu walki ani refleksu — liczy się to, co mówisz i komu ufasz.</div>"+
+ "<ul><li><b>Dotknij ekranu</b>, żeby czytać dalej. Gdy pojawią się odpowiedzi, wybierz jedną.</li>"+
+ "<li>Na górze widzisz, jak patrzą na ciebie <b>Jack</b>, <b>Nerd</b> i <b>Soren</b>:<br>S — sympatia, Z — zaufanie, Sz — szacunek, I — wspólne interesy.<br>Skala od 0 do 10, każdy zaczyna od 5.</li>"+
+ "<li>Gdy któraś liczba spadnie do <b>0</b>, ta osoba zamyka się przed tobą i mówi ci mniej. Gra nie kończy się wtedy przegraną — idziesz dalej z tym, co masz.</li>"+
+ "<li><b>Zaufanie</b> otwiera drzwi. Niektóre rzeczy usłyszysz tylko od kogoś, kto ci ufa.</li>"+
+ "<li><b>AKTA</b> to wszystko, czego się dowiedziałeś. Fakty oznaczone [K] są kluczowe — bez nich część decyzji pozostanie zamknięta.</li>"+
+ "<li>Gra ma <b>5 zakończeń</b>. To, które zobaczysz, zależy od tego, co wiesz i kto ci ufa.</li>"+
+ "<li>Gra <b>zapisuje się sama</b> po każdym wyborze. Menu ≡ na górze pozwala wrócić do ekranu startowego.</li></ul>")}
+function oGrze(){nakladka("<h2>Ostatni cykl</h2><div class=pod>Psychologiczna gra science fiction o wyborach</div>"+
+ "<p>Statek badawczy. Obca maszyna, uruchomiona bez zgody dowódcy. Porucznik, który przeżył — ale nie jest już tym samym człowiekiem i nie może mówić za siebie.</p>"+
+ "<p>Trzy osoby chcą od maszyny czegoś innego. Ty masz zdecydować, komu oddać ostatni cykl.</p>"+
+ "<p style='margin-top:6cqw'>Autorka: <b>Alex</b><br><span style='color:var(--szary);font-size:3.4cqw'>przy użyciu Claude Opus 5.5</span></p>"+
+ "<p style='color:var(--szary);font-size:3.4cqw'>Wersja podglądowa · "+WERSJA+"</p>")}
+function wyjscie(){try{if(window.Android&&Android.zamknij){Android.zamknij();return}}catch(e){}toast("W przeglądarce zamknij kartę. W aplikacji na telefonie ten przycisk zamknie grę.")}
+function menuGry(){var o=document.createElement("div");o.className="menuW";o.innerHTML="<h2>Menu</h2>";
+ [["Wznów",function(){o.remove()}],["Jak grać",function(){jakGrac()}],["Akta",function(){pokazAkta()}],["Wróć do ekranu startowego",function(){location.reload()}]].forEach(function(x){
+  var b=document.createElement("button");b.textContent=x[0];b.onclick=function(ev){ev.stopPropagation();x[1]()};o.appendChild(b)});
+ o.onclick=function(ev){ev.stopPropagation()};tel.appendChild(o)}
+function nowaGra(){usunZapis();zapis=[];grasie=true;$("start").remove();pasek();krok()}
+function kontynuuj(z){grasie=true;$("start").remove();odtw=z.slice();szybko=true;var g=0;while(szybko&&g++<50000)krok();pasek()}
+function ekranStartowy(){var z=wczytajZapis();var e=document.createElement("div");e.className="start";e.id="start";
+ e.innerHTML="<h1>Ostatni cykl</h1><div class=podt>GRA O WYBORACH</div>";
+ var lista=[];if(z)lista.push(["Kontynuuj",function(){kontynuuj(z)},1]);
+ lista.push(["Nowa gra",function(){if(z){var o=document.createElement("div");o.className="menuW";o.innerHTML="<h2>Nowa gra?</h2><p>Zapisany postęp zostanie zastąpiony.</p>";
+   [["Tak, zacznij od nowa",function(){o.remove();nowaGra()}],["Nie",function(){o.remove()}]].forEach(function(x){var b=document.createElement("button");b.textContent=x[0];b.onclick=function(ev){ev.stopPropagation();x[1]()};o.appendChild(b)});
+   o.onclick=function(ev){ev.stopPropagation()};tel.appendChild(o)}else nowaGra()},!z]);
+ lista.push(["Jak grać",jakGrac]);lista.push(["O grze",oGrze]);lista.push(["Wyjście",wyjscie]);
+ lista.forEach(function(x){var b=document.createElement("button");b.textContent=x[0];if(x[2])b.className="glowny";b.onclick=function(ev){ev.stopPropagation();x[1]()};e.appendChild(b)});
+ var p=document.createElement("div");p.className="podpis";p.textContent="Alex · przy użyciu Claude Opus 5.5";e.appendChild(p);
+ e.onclick=function(ev){ev.stopPropagation()};tel.appendChild(e)}
+ekranStartowy();
+</script>
+</body>
+</html>
