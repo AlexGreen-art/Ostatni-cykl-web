@@ -6,4 +6,4 @@ Statek badawczy. Obca maszyna, uruchomiona bez zgody dowódcy. Porucznik, który
 
 Najlepiej grać na telefonie. 5 zakończeń, gra zapisuje się sama.
 
-Autorka: Aleksandra Stelmach · przy użyciu Claude Opus 5.5
+Autorka: Aleksandra Stelmach · przy użyciu Claude Opus 5.5 i GPT-6
