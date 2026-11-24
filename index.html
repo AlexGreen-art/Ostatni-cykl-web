@@ -490,8 +490,11 @@ function jakGrac(){nakladka("<h2>Jak grać</h2><div class=pod>Ostatni cykl to gr
 function oGrze(){nakladka("<h2>Ostatni cykl</h2><div class=pod>Psychologiczna gra science fiction o wyborach</div>"+
  "<p>Statek badawczy. Obca maszyna, uruchomiona bez zgody dowódcy. Porucznik, który przeżył — ale nie jest już tym samym człowiekiem i nie może mówić za siebie.</p>"+
  "<p>Trzy osoby chcą od maszyny czegoś innego. Ty masz zdecydować, komu oddać ostatni cykl.</p>"+
- "<p style='margin-top:6cqw'>Autorka: <b>Alex</b><br><span style='color:var(--szary);font-size:3.4cqw'>przy użyciu Claude Opus 5.5</span></p>"+
- "<p style='color:var(--szary);font-size:3.4cqw'>Wersja podglądowa · "+WERSJA+"</p>")}
+ "<p style='margin-top:6cqw'>Autorka: <b>Aleksandra Stelmach</b><br><span style='color:var(--szary);font-size:3.4cqw'>przy użyciu Claude Opus 5.5</span></p>"+
+ "<p style='color:var(--szary);font-size:3.4cqw'>"+wersjaTxt()+"</p>")}
+function wersjaTxt(){try{if(window.Android&&Android.wersja)return "Wersja "+Android.wersja()}catch(e){}return "Wersja online · "+WERSJA}
+window.wstecz=function(){var w=[].slice.call(tel.querySelectorAll(".akta,.menuW"));if(w.length){w[w.length-1].remove();return}
+ if($("start")){wyjscie();return}if(tel.querySelector(".koniec"))location.reload();else menuGry()};
 function wyjscie(){try{if(window.Android&&Android.zamknij){Android.zamknij();return}}catch(e){}toast("W przeglądarce zamknij kartę. W aplikacji na telefonie ten przycisk zamknie grę.")}
 function menuGry(){var o=document.createElement("div");o.className="menuW";o.innerHTML="<h2>Menu</h2>";
  [["Wznów",function(){o.remove()}],["Jak grać",function(){jakGrac()}],["Akta",function(){pokazAkta()}],["Wróć do ekranu startowego",function(){location.reload()}]].forEach(function(x){
@@ -507,7 +510,7 @@ function ekranStartowy(){var z=wczytajZapis();var e=document.createElement("div"
    o.onclick=function(ev){ev.stopPropagation()};tel.appendChild(o)}else nowaGra()},!z]);
  lista.push(["Jak grać",jakGrac]);lista.push(["O grze",oGrze]);lista.push(["Wyjście",wyjscie]);
  lista.forEach(function(x){var b=document.createElement("button");b.textContent=x[0];if(x[2])b.className="glowny";b.onclick=function(ev){ev.stopPropagation();x[1]()};e.appendChild(b)});
- var p=document.createElement("div");p.className="podpis";p.textContent="Alex · przy użyciu Claude Opus 5.5";e.appendChild(p);
+ var p=document.createElement("div");p.className="podpis";p.textContent="Aleksandra Stelmach · przy użyciu Claude Opus 5.5";e.appendChild(p);
  e.onclick=function(ev){ev.stopPropagation()};tel.appendChild(e)}
 ekranStartowy();
 </script>
